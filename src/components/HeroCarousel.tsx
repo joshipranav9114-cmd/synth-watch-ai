@@ -1,14 +1,19 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ANIME } from "@/lib/anime-data";
+import { useFeaturedAnime } from "@/lib/anime-data";
 import { Sparkles } from "lucide-react";
 
 export function HeroCarousel() {
   const [i, setI] = useState(0);
+  const { data: ANIME, isLoading } = useFeaturedAnime();
   useEffect(() => {
+    if (!ANIME.length) return;
     const t = setInterval(() => setI((p) => (p + 1) % ANIME.length), 5000);
     return () => clearInterval(t);
-  }, []);
+  }, [ANIME.length]);
+  if (isLoading || !ANIME.length) {
+    return <div className="h-[440px] w-full animate-pulse bg-muted/20" />;
+  }
   const a = ANIME[i];
   return (
     <Link to="/anime/$id" params={{ id: a.id }} className="relative block h-[440px] w-full overflow-hidden">
@@ -23,7 +28,7 @@ export function HeroCarousel() {
           {a.studio} · {a.year} · {a.genres.join(" · ")}
         </p>
         <div className="mt-3 flex gap-2">
-          {ANIME.map((_, idx) => (
+          {ANIME.map((_a, idx) => (
             <span
               key={idx}
               className={`h-1 rounded-full transition-all ${idx === i ? "w-8 bg-gradient-neon" : "w-2 bg-muted"}`}
