@@ -1,39 +1,34 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowRight, Sparkles } from "lucide-react";
-import { ANIME } from "@/lib/anime-data";
+import { useFeaturedAnime } from "@/lib/anime-data";
+import a1 from "@/assets/anime-1.jpg";
+import a2 from "@/assets/anime-2.jpg";
+import a3 from "@/assets/anime-3.jpg";
+import a4 from "@/assets/anime-4.jpg";
+import a5 from "@/assets/anime-5.jpg";
+import a6 from "@/assets/anime-6.jpg";
 
 export const Route = createFileRoute("/onboarding")({ component: Onboarding });
 
-const slides = [
-  {
-    badge: "AI Discovery",
-    title: ["Smart", "Recommendations,", "Evolved"],
-    titleAccent: 2,
-    body: "AniVerse AI analyzes your emotional response to every episode, crafting a viewing path that matches your unique soul.",
-    images: [ANIME[2], ANIME[1]],
-  },
-  {
-    badge: "Mood Engine",
-    title: ["Find What", "Hits Your", "Frequency"],
-    titleAccent: 2,
-    body: "Tell our assistant how you feel — sad, hyped, nostalgic — and watch the perfect series surface in seconds.",
-    images: [ANIME[5], ANIME[3]],
-  },
-  {
-    badge: "Trophy Room",
-    title: ["Your Anime", "Story, Forever", "Curated"],
-    titleAccent: 2,
-    body: "Build a cinematic trophy room of your favorites and revisit the timelines that shaped you.",
-    images: [ANIME[4], ANIME[0]],
-  },
+const fallback = [a1, a2, a3, a4, a5, a6];
+const slidesMeta = [
+  { badge: "AI Discovery", title: ["Smart", "Recommendations,", "Evolved"], titleAccent: 2,
+    body: "AniVerse AI analyzes your emotional response to every episode, crafting a viewing path that matches your unique soul.", idx: [1, 3] },
+  { badge: "Mood Engine", title: ["Find What", "Hits Your", "Frequency"], titleAccent: 2,
+    body: "Tell our assistant how you feel — sad, hyped, nostalgic — and watch the perfect series surface in seconds.", idx: [2, 4] },
+  { badge: "Trophy Room", title: ["Your Anime", "Story, Forever", "Curated"], titleAccent: 2,
+    body: "Build a cinematic trophy room of your favorites and revisit the timelines that shaped you.", idx: [0, 5] },
 ];
 
 function Onboarding() {
   const [i, setI] = useState(0);
   const nav = useNavigate();
-  const s = slides[i];
-  const next = () => (i < slides.length - 1 ? setI(i + 1) : nav({ to: "/login" }));
+  const { data: featured } = useFeaturedAnime();
+  const meta = slidesMeta[i];
+  const pick = (idx: number) => featured[idx] ?? { image: fallback[idx % fallback.length], match: 95 };
+  const s = { ...meta, images: meta.idx.map(pick) };
+  const next = () => (i < slidesMeta.length - 1 ? setI(i + 1) : nav({ to: "/login" }));
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-background pb-32">
@@ -80,7 +75,7 @@ function Onboarding() {
 
       <div className="fixed bottom-0 left-0 right-0 px-5 pb-6 pt-3 bg-gradient-to-t from-background via-background to-transparent">
         <div className="mb-5 flex items-center justify-center gap-2">
-          {slides.map((_, idx) => (
+          {slidesMeta.map((_, idx) => (
             <span key={idx} className={`h-1 rounded-full transition-all ${idx === i ? "w-8 bg-gradient-neon" : "w-2 bg-muted"}`} />
           ))}
         </div>
@@ -88,7 +83,7 @@ function Onboarding() {
           onClick={next}
           className="flex h-14 w-full items-center justify-center gap-3 rounded-full bg-gradient-hero text-sm font-bold uppercase tracking-widest text-primary-foreground shadow-neon"
         >
-          {i < slides.length - 1 ? "Continue" : "Enter the Universe"} <ArrowRight className="h-4 w-4" />
+          {i < slidesMeta.length - 1 ? "Continue" : "Enter the Universe"} <ArrowRight className="h-4 w-4" />
         </button>
       </div>
     </main>
