@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ArrowLeft, Bookmark, BookmarkCheck, Play, Sparkles, Star } from "lucide-react";
-import { findAnime } from "@/lib/anime-data";
+import { useAnimeById } from "@/lib/anime-data";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
@@ -12,7 +12,7 @@ function Detail() {
   const { id } = Route.useParams();
   const nav = useNavigate();
   const { user } = useAuth();
-  const anime = findAnime(id);
+  const { data: anime, isLoading } = useAnimeById(id);
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
@@ -20,6 +20,10 @@ function Detail() {
     supabase.from("watchlist").select("id").eq("user_id", user.id).eq("anime_id", anime.id).maybeSingle()
       .then(({ data }) => setSaved(!!data));
   }, [user, anime]);
+
+  if (isLoading) {
+    return <main className="flex min-h-screen items-center justify-center text-muted-foreground">Loading…</main>;
+  }
 
   if (!anime) {
     return (
@@ -84,7 +88,7 @@ function Detail() {
         </div>
 
         <div className="mt-5 flex flex-wrap gap-2">
-          {anime.genres.map((g) => (
+          {anime.genres.map((g: string) => (
             <span key={g} className="rounded-full glass px-3 py-1 text-[11px] font-semibold text-foreground">{g}</span>
           ))}
         </div>

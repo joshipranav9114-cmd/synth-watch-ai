@@ -1,24 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Search as SearchIcon } from "lucide-react";
-import { ANIME } from "@/lib/anime-data";
+import { useSearchAnime } from "@/lib/anime-data";
 import { AnimeCard } from "@/components/AnimeCard";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const Route = createFileRoute("/_app/search")({ component: Search });
 
-const GENRES = ["All", "Cyberpunk", "Mecha", "Fantasy", "Romance", "Samurai", "Slice of Life"];
+const GENRES = ["All", "Action", "Adventure", "Comedy", "Drama", "Fantasy", "Romance", "Sci-Fi", "Slice of Life", "Supernatural", "Mecha"];
 
 function Search() {
   const [q, setQ] = useState("");
   const [genre, setGenre] = useState("All");
-
-  const results = useMemo(() => {
-    return ANIME.filter((a) => {
-      const matchQ = !q || a.title.toLowerCase().includes(q.toLowerCase()) || a.studio.toLowerCase().includes(q.toLowerCase());
-      const matchG = genre === "All" || a.genres.includes(genre);
-      return matchQ && matchG;
-    });
-  }, [q, genre]);
+  const { data: results, isLoading } = useSearchAnime(q, genre);
 
   return (
     <main className="px-5 pt-6">
@@ -46,10 +40,13 @@ function Search() {
       </div>
 
       <div className="mt-6 grid grid-cols-2 gap-3">
-        {results.map((a) => (
+        {isLoading && Array.from({ length: 6 }).map((_, i) => (
+          <Skeleton key={i} className="h-60 w-full rounded-2xl" />
+        ))}
+        {!isLoading && results?.map((a) => (
           <div key={a.id}><AnimeCard anime={a} size="lg" /></div>
         ))}
-        {results.length === 0 && (
+        {!isLoading && results && results.length === 0 && (
           <p className="col-span-2 mt-10 text-center text-sm text-muted-foreground">No timelines match your query.</p>
         )}
       </div>
