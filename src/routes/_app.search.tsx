@@ -15,16 +15,19 @@ function Search() {
   const { data: results, isLoading } = useSearchAnime(q, genre);
 
   return (
-    <main className="px-5 pt-6">
-      <h1 className="text-2xl font-bold text-foreground">Discover</h1>
-      <p className="text-xs text-muted-foreground">Search 4,200+ timelines</p>
+    <main className="bg-mesh px-5 pt-6 min-h-screen">
+      <p className="text-[11px] font-black uppercase tracking-[0.25em] text-neon-orange">Explore</p>
+      <h1 className="text-3xl font-black tracking-tight text-foreground">
+        Discover <span className="text-gradient-neon">Anime</span>
+      </h1>
+      <p className="mt-1 text-xs text-muted-foreground">Search 4,200+ timelines, studios & characters</p>
 
       <div className="relative mt-5">
         <SearchIcon className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <input
           autoFocus value={q} onChange={(e) => setQ(e.target.value)}
           placeholder="Search anime, studios, characters..."
-          className="h-12 w-full rounded-2xl bg-input pl-11 pr-4 text-sm text-foreground placeholder:text-muted-foreground/60 outline-none focus:ring-2 focus:ring-primary"
+          className="h-13 w-full rounded-2xl glass pl-11 pr-4 py-4 text-sm font-medium text-foreground placeholder:text-muted-foreground/60 outline-none focus:ring-2 focus:ring-primary"
         />
       </div>
 
@@ -32,16 +35,16 @@ function Search() {
         {GENRES.map((g) => (
           <button
             key={g} onClick={() => setGenre(g)}
-            className={`flex-shrink-0 rounded-full px-4 py-1.5 text-xs font-bold transition ${
-              genre === g ? "bg-gradient-neon text-primary-foreground shadow-neon" : "glass text-muted-foreground"
+            className={`flex-shrink-0 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wider transition ${
+              genre === g ? "bg-gradient-hero text-primary-foreground shadow-neon" : "glass text-muted-foreground"
             }`}
           >{g}</button>
         ))}
       </div>
 
-      <div className="mt-6 grid grid-cols-2 gap-3">
+      <div className="mt-6 grid grid-cols-2 gap-4">
         {isLoading && Array.from({ length: 6 }).map((_, i) => (
-          <Skeleton key={i} className="h-60 w-full rounded-2xl" />
+          <Skeleton key={i} className="h-64 w-full rounded-2xl" />
         ))}
         {!isLoading && results?.map((a) => (
           <div key={a.id}><AnimeCard anime={a} size="lg" /></div>
