@@ -2,8 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Bell, Sparkles } from "lucide-react";
 import { HeroCarousel } from "@/components/HeroCarousel";
 import { AnimeCard } from "@/components/AnimeCard";
-import { TRENDING, SEASONAL, FOR_YOU } from "@/lib/anime-data";
+import { useFeaturedAnime, useSeasonalAnime, useTopAnime, type Anime } from "@/lib/anime-data";
 import { useAuth } from "@/lib/auth";
+import { Skeleton } from "@/components/ui/skeleton";
 import logo from "@/assets/aniverse-logo.png";
 
 export const Route = createFileRoute("/_app/home")({ component: Home });
@@ -11,6 +12,9 @@ export const Route = createFileRoute("/_app/home")({ component: Home });
 function Home() {
   const { user } = useAuth();
   const name = user?.email?.split("@")[0] ?? "Pilot";
+  const { data: featured } = useFeaturedAnime();
+  const { data: trending } = useTopAnime();
+  const { data: seasonal } = useSeasonalAnime();
 
   return (
     <main>
@@ -32,15 +36,15 @@ function Home() {
       </section>
 
       <Section title="For You" subtitle="AI Curated">
-        {FOR_YOU.map((a) => <AnimeCard key={a.id} anime={a} />)}
+        <CardRow items={featured} />
       </Section>
 
       <Section title="Trending Now" subtitle="This week">
-        {TRENDING.map((a) => <AnimeCard key={a.id} anime={a} size="lg" />)}
+        <CardRow items={trending} size="lg" />
       </Section>
 
       <Section title="This Season" subtitle="Spring 2025">
-        {SEASONAL.map((a) => <AnimeCard key={a.id} anime={a} />)}
+        <CardRow items={seasonal} />
       </Section>
 
       <section className="px-5 pt-6">
@@ -70,5 +74,23 @@ function Section({ title, subtitle, children }: { title: string; subtitle: strin
       </div>
       <div className="flex gap-3 overflow-x-auto px-5 pb-2 scrollbar-hide">{children}</div>
     </section>
+  );
+}
+
+function CardRow({ items, size = "md" }: { items: Anime[] | undefined; size?: "sm" | "md" | "lg" }) {
+  if (!items || items.length === 0) {
+    const w = size === "lg" ? "w-44 h-60" : "w-36 h-52";
+    return (
+      <>
+        {Array.from({ length: 5 }).map((_, i) => (
+          <Skeleton key={i} className={`flex-shrink-0 rounded-2xl ${w}`} />
+        ))}
+      </>
+    );
+  }
+  return (
+    <>
+      {items.map((a) => <AnimeCard key={a.id} anime={a} size={size} />)}
+    </>
   );
 }
