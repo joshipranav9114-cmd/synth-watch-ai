@@ -12,7 +12,7 @@ const items = [
 export function BottomNav() {
   const { pathname } = useLocation();
   return (
-    <nav className="fixed bottom-3 left-3 right-3 z-50 mx-auto max-w-md rounded-3xl glass shadow-card">
+    <nav className="fixed bottom-3 left-3 right-3 z-50 mx-auto max-w-md rounded-3xl glass card-glow">
       <div className="flex items-center justify-around px-2 py-2">
         {items.map(({ to, icon: Icon, label }) => {
           const active = pathname.startsWith(to);
@@ -23,13 +23,13 @@ export function BottomNav() {
               className="flex flex-1 flex-col items-center gap-0.5 rounded-2xl px-2 py-1.5"
             >
               <div
-                className={`flex h-9 w-9 items-center justify-center rounded-xl transition-all ${
-                  active ? "bg-gradient-neon shadow-neon" : ""
+                className={`flex h-10 w-10 items-center justify-center rounded-xl transition-all ${
+                  active ? "bg-gradient-hero shadow-neon scale-105" : ""
                 }`}
               >
                 <Icon className={`h-5 w-5 ${active ? "text-primary-foreground" : "text-muted-foreground"}`} />
               </div>
-              <span className={`text-[10px] font-medium ${active ? "text-foreground" : "text-muted-foreground"}`}>
+              <span className={`text-[10px] font-bold uppercase tracking-wider ${active ? "text-neon-orange" : "text-muted-foreground"}`}>
                 {label}
               </span>
             </Link>
