@@ -1,35 +1,68 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
-import { Eye, EyeOff, Lock, Mail, Sparkles } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Eye, EyeOff, Loader2, Lock, Mail, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable";
+import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/login")({ component: Login });
 
 function Login() {
   const nav = useNavigate();
+  const { user, loading: authLoading } = useAuth();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [pw, setPw] = useState("");
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+
+  // Auto-redirect already-signed-in users
+  useEffect(() => {
+    if (!authLoading && user) nav({ to: "/home" });
+  }, [authLoading, user, nav]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
       if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({
-          email, password: pw,
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password: pw,
           options: { emailRedirectTo: window.location.origin + "/home" },
         });
-        if (error) throw error;
-        toast.success("Account created — entering the universe...");
+        if (error) {
+          // Auto-switch to sign-in if account already exists
+          if (
+            error.message?.toLowerCase().includes("already") ||
+            (error as { code?: string }).code === "user_already_exists"
+          ) {
+            setMode("signin");
+            toast.info("Account already exists — please sign in instead.");
+            return;
+          }
+          throw error;
+        }
+        if (data.session) {
+          toast.success("Welcome to AniVerse!");
+          nav({ to: "/home" });
+        } else {
+          toast.success("Check your inbox to confirm your email.");
+        }
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password: pw });
-        if (error) throw error;
+        if (error) {
+          if (error.message?.toLowerCase().includes("invalid")) {
+            toast.error("Wrong email or password. Try again or reset your password.");
+          } else {
+            throw error;
+          }
+          return;
+        }
+        nav({ to: "/home" });
       }
-      nav({ to: "/home" });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Authentication failed");
     } finally {
@@ -37,47 +70,117 @@ function Login() {
     }
   };
 
+  const signInGoogle = async () => {
+    setGoogleLoading(true);
+    try {
+      const result = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: window.location.origin + "/home",
+      });
+      if (result.error) throw result.error;
+      if (result.redirected) return; // Browser navigating to Google
+      nav({ to: "/home" });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Google sign-in failed");
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
+
+  const forgotPassword = async () => {
+    if (!email) {
+      toast.error("Enter your email above first.");
+      return;
+    }
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + "/reset-password",
+    });
+    if (error) toast.error(error.message);
+    else toast.success("Reset link sent — check your inbox.");
+  };
+
+  if (authLoading || user) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-background">
+        <Loader2 className="h-6 w-6 animate-spin text-neon-orange" />
+      </main>
+    );
+  }
+
   return (
-    <main className="relative flex min-h-screen flex-col items-center bg-background px-5 pb-10 pt-12">
+    <main className="relative flex min-h-screen flex-col items-center bg-mesh px-5 pb-10 pt-12">
       <div className="absolute inset-x-0 top-0 h-72 opacity-70" style={{
         background: "radial-gradient(60% 80% at 50% 0%, oklch(0.78 0.20 350 / 0.45), transparent 70%)",
       }} />
       <header className="relative mb-6 flex flex-col items-center">
         <h1 className="text-5xl font-extrabold tracking-tight text-gradient-neon">AniVerse</h1>
         <div className="mt-3 inline-flex items-center gap-1.5 rounded-full glass px-4 py-1 text-[10px] font-bold uppercase tracking-widest text-foreground">
-          <Sparkles className="h-3 w-3 text-neon-pink" /> AI Personalized
+          <Sparkles className="h-3 w-3 text-neon-pink" /> Stream the multiverse
         </div>
       </header>
 
-      <div className="relative w-full max-w-md rounded-3xl glass p-6 shadow-card">
-        <h2 className="mb-6 text-center text-2xl font-bold text-foreground">
-          {mode === "signin" ? "Welcome Back" : "Initialize Account"}
+      <div className="relative w-full max-w-md rounded-3xl glass card-glow p-6">
+        <h2 className="mb-1 text-center text-2xl font-black tracking-tight text-foreground">
+          {mode === "signin" ? "Welcome Back" : "Create Account"}
         </h2>
+        <p className="mb-5 text-center text-xs text-muted-foreground">
+          {mode === "signin" ? "Pick up where you left off." : "Start your AniVerse journey."}
+        </p>
 
-        <form onSubmit={submit} className="space-y-5">
+        <button
+          type="button"
+          onClick={signInGoogle}
+          disabled={googleLoading || loading}
+          className="mb-4 flex h-12 w-full items-center justify-center gap-3 rounded-full bg-foreground text-sm font-bold text-background shadow-orange disabled:opacity-60"
+        >
+          {googleLoading ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <svg viewBox="0 0 48 48" className="h-5 w-5">
+              <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 6.1 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z"/>
+              <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 16 19 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 6.1 29.5 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
+              <path fill="#4CAF50" d="M24 44c5.4 0 10.3-2.1 14-5.4l-6.5-5.5C29.4 34.6 26.8 36 24 36c-5.3 0-9.7-3.1-11.3-7.6l-6.6 5.1C9.5 39.6 16.2 44 24 44z"/>
+              <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.3-4.2 5.6l6.5 5.5C40.3 35.9 44 30.5 44 24c0-1.3-.1-2.3-.4-3.5z"/>
+            </svg>
+          )}
+          Continue with Google
+        </button>
+
+        <div className="mb-4 flex items-center gap-3">
+          <div className="h-px flex-1 bg-border" />
+          <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">or</span>
+          <div className="h-px flex-1 bg-border" />
+        </div>
+
+        <form onSubmit={submit} className="space-y-4">
           <div>
-            <label className="mb-2 block text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Neural ID (Email)</label>
+            <label className="mb-2 block text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Email</label>
             <div className="relative">
               <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <input
                 type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
-                placeholder="kusanagi@sector9.com"
-                className="h-12 w-full rounded-xl bg-input pl-10 pr-3 text-sm text-foreground placeholder:text-muted-foreground/60 outline-none focus:ring-2 focus:ring-primary"
+                placeholder="you@example.com"
+                autoComplete="email"
+                className="h-12 w-full rounded-xl bg-input pl-10 pr-3 text-sm text-foreground placeholder:text-muted-foreground/60 outline-none focus:ring-2 focus:ring-neon-orange"
               />
             </div>
           </div>
 
           <div>
             <div className="mb-2 flex items-center justify-between">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Cipher Key</label>
-              <button type="button" className="text-[10px] font-bold uppercase tracking-widest text-neon-pink">Forgot?</button>
+              <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Password</label>
+              {mode === "signin" && (
+                <button type="button" onClick={forgotPassword} className="text-[10px] font-bold uppercase tracking-widest text-neon-orange">
+                  Forgot?
+                </button>
+              )}
             </div>
             <div className="relative">
               <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <input
                 type={show ? "text" : "password"} required minLength={6} value={pw} onChange={(e) => setPw(e.target.value)}
                 placeholder="••••••••"
-                className="h-12 w-full rounded-xl bg-input pl-10 pr-10 text-sm text-foreground outline-none focus:ring-2 focus:ring-primary"
+                autoComplete={mode === "signin" ? "current-password" : "new-password"}
+                className="h-12 w-full rounded-xl bg-input pl-10 pr-10 text-sm text-foreground outline-none focus:ring-2 focus:ring-neon-orange"
               />
               <button type="button" onClick={() => setShow((s) => !s)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
                 {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -86,24 +189,23 @@ function Login() {
           </div>
 
           <button
-            type="submit" disabled={loading}
-            className="h-13 flex h-13 w-full items-center justify-center rounded-full bg-gradient-hero py-4 text-sm font-bold uppercase tracking-widest text-primary-foreground shadow-neon disabled:opacity-60"
+            type="submit" disabled={loading || googleLoading}
+            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-gradient-cr text-sm font-extrabold uppercase tracking-widest text-background shadow-orange disabled:opacity-60"
           >
-            {loading ? "..." : mode === "signin" ? "Enter the Universe" : "Initialize Account"}
+            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : mode === "signin" ? "Sign In" : "Create Account"}
           </button>
         </form>
       </div>
 
-      <p className="relative mt-8 text-sm text-muted-foreground">
-        {mode === "signin" ? "New to the Sector?" : "Already a Pilot?"}{" "}
-        <button onClick={() => setMode(mode === "signin" ? "signup" : "signin")} className="font-bold text-neon-pink">
-          {mode === "signin" ? "Initialize Account" : "Sign In"}
+      <p className="relative mt-6 text-sm text-muted-foreground">
+        {mode === "signin" ? "New here?" : "Already have an account?"}{" "}
+        <button onClick={() => setMode(mode === "signin" ? "signup" : "signin")} className="font-bold text-neon-orange">
+          {mode === "signin" ? "Create account" : "Sign in"}
         </button>
       </p>
 
       <footer className="relative mt-auto pt-10 text-center">
-        <p className="text-[10px] uppercase tracking-widest text-muted-foreground/70">Version 2.0.4 // System Stable</p>
-        <Link to="/" className="mt-3 inline-block text-[10px] uppercase tracking-widest text-muted-foreground/60">Back to splash</Link>
+        <Link to="/" className="text-[10px] uppercase tracking-widest text-muted-foreground/60">Back to splash</Link>
       </footer>
     </main>
   );
