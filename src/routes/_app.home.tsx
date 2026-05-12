@@ -1,7 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Bell, Flame, Search, Sparkles, TrendingUp } from "lucide-react";
+import { Bell, Flame, Play, Search, Sparkles, TrendingUp, Zap } from "lucide-react";
 import { HeroCarousel } from "@/components/HeroCarousel";
 import { AnimeCard } from "@/components/AnimeCard";
+import { ContinueWatching } from "@/components/ContinueWatching";
+import { EpisodeRow } from "@/components/EpisodeCard";
 import { useFeaturedAnime, useSeasonalAnime, useTopAnime, type Anime } from "@/lib/anime-data";
 import { useAuth } from "@/lib/auth";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -18,7 +20,7 @@ function Home() {
 
   return (
     <main className="bg-mesh">
-      <header className="absolute left-0 right-0 top-0 z-20 flex items-center justify-between px-5 py-4">
+      <header className="absolute left-0 right-0 top-0 z-20 flex items-center justify-between px-5 py-4 bg-gradient-to-b from-background/80 to-transparent">
         <div className="flex items-center gap-2">
           <img src={logo} alt="" className="h-8 w-8 drop-shadow-[0_0_12px_rgba(180,80,255,0.7)]" />
           <span className="text-xl font-black tracking-tight text-gradient-neon">AniVerse</span>
@@ -37,37 +39,41 @@ function Home() {
       <HeroCarousel />
 
       <section className="px-5 pt-6">
-        <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-neon-orange">Welcome back</p>
-        <h2 className="mt-1 text-2xl font-black capitalize tracking-tight text-foreground">
-          {name}, ready for <span className="text-gradient-neon">today's drop?</span>
-        </h2>
-      </section>
-
-      <section className="px-5 pt-5">
-        <div className="grid grid-cols-3 gap-2">
-          {[
-            { label: "Subbed", count: "12K+", grad: "bg-gradient-orange" },
-            { label: "Dubbed", count: "5.2K", grad: "bg-gradient-neon" },
-            { label: "Movies", count: "1.8K", grad: "bg-gradient-blue" },
-          ].map((s) => (
-            <div key={s.label} className="rounded-2xl glass p-3 text-center card-glow">
-              <p className={`bg-clip-text text-lg font-black text-transparent ${s.grad}`}>{s.count}</p>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{s.label}</p>
-            </div>
-          ))}
+        <div className="flex items-end justify-between">
+          <div>
+            <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-neon-orange">Welcome back</p>
+            <h2 className="mt-1 text-2xl font-black capitalize tracking-tight text-foreground">
+              {name}, ready to <span className="text-gradient-neon">stream?</span>
+            </h2>
+          </div>
+          <Link
+            to="/anime/$id"
+            params={{ id: featured?.[0]?.id ?? "21" }}
+            className="flex items-center gap-2 rounded-full bg-gradient-cr px-4 py-2 text-[11px] font-black uppercase tracking-widest text-background shadow-orange"
+          >
+            <Play className="h-3.5 w-3.5 fill-current" /> Resume
+          </Link>
         </div>
       </section>
 
-      <Section title="For You" subtitle="AI Curated" icon={<Sparkles className="h-3 w-3" />} accent="text-neon-pink">
+      <Section title="Continue Watching" subtitle="Pick up where you left off" icon={<Zap className="h-3 w-3" />} accent="text-neon-orange">
+        <ContinueWatching items={featured} />
+      </Section>
+
+      <Section title="Latest Episodes" subtitle="Fresh Drops" icon={<Flame className="h-3 w-3" />} accent="text-neon-pink" wrap={false}>
+        <EpisodeRow items={seasonal} />
+      </Section>
+
+      <Section title="For You" subtitle="AI Curated" icon={<Sparkles className="h-3 w-3" />} accent="text-neon-purple">
         <CardRow items={featured} size="lg" />
       </Section>
 
-      <Section title="Top 10 This Week" subtitle="Trending" icon={<TrendingUp className="h-3 w-3" />} accent="text-neon-orange">
+      <Section title="Top 10 This Week" subtitle="Trending Now" icon={<TrendingUp className="h-3 w-3" />} accent="text-neon-orange">
         <CardRow items={trending?.slice(0, 10)} size="xl" ranked />
       </Section>
 
-      <Section title="New Episodes" subtitle="This Season" icon={<Flame className="h-3 w-3" />} accent="text-neon-cyan">
-        <CardRow items={seasonal} size="lg" />
+      <Section title="Simulcast Season" subtitle="This Season" icon={<Flame className="h-3 w-3" />} accent="text-neon-cyan">
+        <CardRow items={seasonal} size="xl" />
       </Section>
 
       <section className="px-5 pt-8">
@@ -101,12 +107,14 @@ function Section({
   icon,
   accent = "text-neon-cyan",
   children,
+  wrap = true,
 }: {
   title: string;
   subtitle: string;
   icon?: React.ReactNode;
   accent?: string;
   children: React.ReactNode;
+  wrap?: boolean;
 }) {
   return (
     <section className="pt-7">
@@ -121,7 +129,11 @@ function Section({
           View all
         </button>
       </div>
-      <div className="flex gap-4 overflow-x-auto px-5 pb-3 scrollbar-hide">{children}</div>
+      {wrap ? (
+        <div className="flex gap-4 overflow-x-auto px-5 pb-3 scrollbar-hide snap-x-mandatory">{children}</div>
+      ) : (
+        children
+      )}
     </section>
   );
 }
