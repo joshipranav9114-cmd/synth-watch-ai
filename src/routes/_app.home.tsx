@@ -56,7 +56,7 @@ function Home() {
         </div>
       </section>
 
-      <Section title="Continue Watching" subtitle="Pick up where you left off" icon={<Zap className="h-3 w-3" />} accent="text-neon-orange">
+      <Section title="Continue Watching" subtitle="Pick up where you left off" icon={<Zap className="h-3 w-3" />} accent="text-neon-orange" wrap={false}>
         <ContinueWatching items={featured} />
       </Section>
 
