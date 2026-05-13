@@ -17,7 +17,7 @@ function Search() {
   return (
     <main className="bg-mesh px-5 pt-6 min-h-screen">
       <p className="text-[11px] font-black uppercase tracking-[0.25em] text-neon-orange">Explore</p>
-      <h1 className="text-3xl font-black tracking-tight text-foreground">
+      <h1 className="heading-1 text-foreground">
         Discover <span className="text-gradient-neon">Anime</span>
       </h1>
       <p className="mt-1 text-xs text-muted-foreground">Search 4,200+ timelines, studios & characters</p>
