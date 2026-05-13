@@ -44,7 +44,7 @@ export function HeroCarousel() {
             <Sparkles className="h-3 w-3" /> {a.match}% match
           </span>
         </div>
-        <h2 className="text-balance text-5xl font-black leading-[0.95] tracking-tight text-foreground drop-shadow-[0_4px_24px_rgba(0,0,0,0.7)]">
+        <h2 className="heading-display text-balance text-6xl text-foreground drop-shadow-[0_4px_24px_rgba(0,0,0,0.7)]">
           {a.title}
         </h2>
         <div className="mt-3 flex flex-wrap items-center gap-2 text-[11px] font-semibold uppercase tracking-wider">
