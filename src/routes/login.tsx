@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Eye, EyeOff, Loader2, Lock, Mail, Sparkles } from "lucide-react";
+import { Eye, EyeOff, Loader2, Lock, Mail, Sparkles, UserRound, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { useAuth } from "@/lib/auth";
@@ -17,11 +17,42 @@ function Login() {
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [remember, setRemember] = useState(true);
+  const [rememberedEmail, setRememberedEmail] = useState<string | null>(null);
 
   // Auto-redirect already-signed-in users
   useEffect(() => {
     if (!authLoading && user) nav({ to: "/home" });
   }, [authLoading, user, nav]);
+
+  // Restore remembered email for one-tap sign-in
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("aniverse:lastEmail");
+      if (saved) {
+        setRememberedEmail(saved);
+        setEmail(saved);
+      }
+    } catch {
+      // ignore storage errors (private mode, etc.)
+    }
+  }, []);
+
+  const persistEmail = (value: string) => {
+    try {
+      if (remember) localStorage.setItem("aniverse:lastEmail", value);
+      else localStorage.removeItem("aniverse:lastEmail");
+    } catch {
+      // ignore
+    }
+  };
+
+  const forgetMe = () => {
+    try { localStorage.removeItem("aniverse:lastEmail"); } catch { /* noop */ }
+    setRememberedEmail(null);
+    setEmail("");
+    setPw("");
+  };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,6 +77,7 @@ function Login() {
           throw error;
         }
         if (data.session) {
+          persistEmail(email);
           toast.success("Welcome to AniVerse!");
           nav({ to: "/home" });
         } else {
@@ -61,6 +93,7 @@ function Login() {
           }
           return;
         }
+        persistEmail(email);
         nav({ to: "/home" });
       }
     } catch (err) {
@@ -125,6 +158,30 @@ function Login() {
         <p className="mb-5 text-center text-xs text-muted-foreground">
           {mode === "signin" ? "Pick up where you left off." : "Start your AniVerse journey."}
         </p>
+
+        {mode === "signin" && rememberedEmail && (
+          <div className="mb-4 flex items-center justify-between rounded-2xl border border-neon-orange/30 bg-neon-orange/10 p-3">
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-cr text-background">
+                <UserRound className="h-4 w-4" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-neon-orange">
+                  Continue as
+                </p>
+                <p className="truncate text-sm font-bold text-foreground">{rememberedEmail}</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={forgetMe}
+              aria-label="Forget this account"
+              className="flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground hover:text-foreground"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        )}
 
         <button
           type="button"
@@ -194,6 +251,16 @@ function Login() {
           >
             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : mode === "signin" ? "Sign In" : "Create Account"}
           </button>
+
+          <label className="flex cursor-pointer items-center gap-2 text-xs text-muted-foreground">
+            <input
+              type="checkbox"
+              checked={remember}
+              onChange={(e) => setRemember(e.target.checked)}
+              className="h-4 w-4 accent-[hsl(var(--neon-orange))]"
+            />
+            Keep me signed in on this device
+          </label>
         </form>
       </div>
 
