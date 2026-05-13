@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import type { Anime } from "@/lib/anime-data";
 import { Play, Star } from "lucide-react";
+import { PlatformChips } from "@/components/PlatformBadges";
 
 export function AnimeCard({
   anime,
@@ -33,6 +34,9 @@ export function AnimeCard({
             EP {anime.episodes}
           </div>
         ) : null}
+        <div className="absolute bottom-2 left-2">
+          <PlatformChips anime={anime} size="xs" />
+        </div>
         {rank ? (
           <div className="pointer-events-none absolute -bottom-3 -left-1 select-none font-black leading-none text-stroke-neon" style={{ fontSize: size === "xl" ? "5.5rem" : "4.5rem" }}>
             {rank}
