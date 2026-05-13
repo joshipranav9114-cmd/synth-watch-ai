@@ -41,8 +41,8 @@ function Home() {
       <section className="px-5 pt-6">
         <div className="flex items-end justify-between">
           <div>
-            <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-neon-orange">Welcome back</p>
-            <h2 className="mt-1 text-2xl font-black capitalize tracking-tight text-foreground">
+            <p className="heading-eyebrow text-neon-orange">Welcome back</p>
+            <h2 className="heading-2 mt-1 capitalize text-foreground">
               {name}, ready to <span className="text-gradient-neon">stream?</span>
             </h2>
           </div>
@@ -120,10 +120,10 @@ function Section({
     <section className="pt-7">
       <div className="mb-3 flex items-end justify-between px-5">
         <div>
-          <p className={`flex items-center gap-1 text-[10px] font-black uppercase tracking-[0.25em] ${accent}`}>
+          <p className={`heading-eyebrow flex items-center gap-1 ${accent}`}>
             {icon} {subtitle}
           </p>
-          <h3 className="text-2xl font-black tracking-tight text-foreground">{title}</h3>
+          <h3 className="heading-3 text-foreground">{title}</h3>
         </div>
         <button className="rounded-full glass px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-foreground">
           View all
