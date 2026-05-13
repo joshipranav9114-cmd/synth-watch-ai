@@ -116,6 +116,50 @@
   }
   .tracking-cinema { letter-spacing: -0.04em; }
   .tracking-marquee { letter-spacing: 0.18em; }
+
+  /* Consistent heading utilities — Sora-based, cinematic scale */
+  .heading-display {
+    font-family: "Bebas Neue", "Sora", sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    line-height: 0.95;
+    text-transform: uppercase;
+  }
+  .heading-1 {
+    font-family: "Sora", "Inter", sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 1.02;
+    font-size: clamp(2.25rem, 6vw, 3.25rem);
+  }
+  .heading-2 {
+    font-family: "Sora", "Inter", sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    font-size: clamp(1.75rem, 5vw, 2.25rem);
+  }
+  .heading-3 {
+    font-family: "Sora", "Inter", sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    font-size: 1.5rem;
+  }
+  .heading-4 {
+    font-family: "Sora", "Inter", sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+    font-size: 1.125rem;
+  }
+  .heading-eyebrow {
+    font-family: "Sora", "Inter", sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+  }
   .text-gradient-neon {
     background: linear-gradient(135deg, oklch(0.80 0.22 50), oklch(0.78 0.22 350) 45%, oklch(0.68 0.29 305) 75%, oklch(0.70 0.24 250));
     -webkit-background-clip: text;
