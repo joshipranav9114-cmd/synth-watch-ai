@@ -5,6 +5,8 @@ import { useAnimeById } from "@/lib/anime-data";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
+import { PlatformChips, PlatformList } from "@/components/PlatformBadges";
+import { primaryPlatform } from "@/lib/streaming";
 
 export const Route = createFileRoute("/_app/anime/$id")({ component: Detail });
 
@@ -50,6 +52,8 @@ function Detail() {
     }
   };
 
+  const primary = primaryPlatform(anime);
+
   return (
     <main>
       <div className="relative h-[460px]">
@@ -74,14 +78,25 @@ function Detail() {
             <span>·</span><span>{anime.episodes} ep</span>
             <span>·</span><span>{anime.studio}</span>
           </div>
+          <div className="mt-3 flex items-center gap-2">
+            <PlatformChips anime={anime} />
+            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+              Available now
+            </span>
+          </div>
         </div>
       </div>
 
       <section className="px-5 pt-6">
         <div className="flex gap-2">
-          <button className="flex h-13 flex-1 items-center justify-center gap-2 rounded-full bg-gradient-hero py-4 text-sm font-bold uppercase tracking-widest text-primary-foreground shadow-neon">
-            <Play className="h-4 w-4 fill-current" /> Watch Now
-          </button>
+          <a
+            href={primary.searchUrl(anime.title)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex h-13 flex-1 items-center justify-center gap-2 rounded-full bg-gradient-cr py-4 text-sm font-black uppercase tracking-widest text-background shadow-orange transition-transform active:scale-[0.98]"
+          >
+            <Play className="h-4 w-4 fill-current" /> Watch on {primary.name}
+          </a>
           <button onClick={toggleSave} className="flex h-13 items-center justify-center rounded-full glass px-5 text-sm font-bold">
             {saved ? <BookmarkCheck className="h-4 w-4 text-neon-pink" /> : <Bookmark className="h-4 w-4 text-foreground" />}
           </button>
@@ -91,6 +106,13 @@ function Detail() {
           {anime.genres.map((g: string) => (
             <span key={g} className="rounded-full glass px-3 py-1 text-[11px] font-semibold text-foreground">{g}</span>
           ))}
+        </div>
+
+        <h3 className="mt-8 text-sm font-bold uppercase tracking-widest text-neon-orange">
+          Where to Watch
+        </h3>
+        <div className="mt-3">
+          <PlatformList anime={anime} />
         </div>
 
         <h3 className="mt-6 text-sm font-bold uppercase tracking-widest text-neon-cyan">Synopsis</h3>
