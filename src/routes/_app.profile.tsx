@@ -38,7 +38,7 @@ function Profile() {
           <h3 className="text-lg font-bold text-foreground">Achievements</h3>
           <span className="rounded-md bg-primary/20 px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-neon-pink">AI Analyzed</span>
         </div>
-        <div className="flex gap-3 overflow-x-auto scrollbar-hide">
+        <div className="flex gap-3 overflow-x-auto scrollbar-hide smooth-scroll">
           {["Seasonal", "Binge", "Top Reviewer", "Hidden"].map((t, i) => (
             <div key={t} className={`flex w-24 flex-shrink-0 flex-col items-center gap-2 rounded-2xl border border-border p-3 ${i === 0 ? "shadow-cyan" : ""}`}>
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted">

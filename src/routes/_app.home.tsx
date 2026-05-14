@@ -26,10 +26,10 @@ function Home() {
           <span className="text-xl font-black tracking-tight text-gradient-neon">AniVerse</span>
         </div>
         <div className="flex items-center gap-2">
-          <Link to="/search" className="flex h-9 w-9 items-center justify-center rounded-full glass">
+          <Link to="/search" className="flex h-9 w-9 items-center justify-center rounded-full glass press">
             <Search className="h-4 w-4 text-foreground" />
           </Link>
-          <button className="relative flex h-9 w-9 items-center justify-center rounded-full glass">
+          <button className="relative flex h-9 w-9 items-center justify-center rounded-full glass press">
             <Bell className="h-4 w-4 text-foreground" />
             <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-gradient-orange shadow-orange" />
           </button>
@@ -117,7 +117,7 @@ function Section({
   wrap?: boolean;
 }) {
   return (
-    <section className="pt-7">
+    <section className="pt-7 animate-fade-up">
       <div className="mb-3 flex items-end justify-between px-5">
         <div>
           <p className={`heading-eyebrow flex items-center gap-1 ${accent}`}>
@@ -125,12 +125,12 @@ function Section({
           </p>
           <h3 className="heading-3 text-foreground">{title}</h3>
         </div>
-        <button className="rounded-full glass px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-foreground">
+        <button className="rounded-full glass press px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-foreground">
           View all
         </button>
       </div>
       {wrap ? (
-        <div className="flex gap-4 overflow-x-auto px-5 pb-3 scrollbar-hide snap-x-mandatory">{children}</div>
+        <div className="flex gap-4 overflow-x-auto px-5 pb-3 scrollbar-hide snap-x-mandatory smooth-scroll">{children}</div>
       ) : (
         children
       )}
