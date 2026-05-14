@@ -23,7 +23,8 @@ export function ContinueWatching({ items }: { items: Anime[] | undefined }) {
             key={a.id}
             to="/anime/$id"
             params={{ id: a.id }}
-            className="group relative h-40 w-72 flex-shrink-0 snap-start overflow-hidden rounded-2xl card-glow"
+            className="group relative h-40 w-72 flex-shrink-0 snap-start overflow-hidden rounded-2xl card-glow card-interactive animate-fade-up"
+            style={{ animationDelay: `${Math.min(i, 6) * 60}ms` }}
           >
             <img src={a.image} alt={a.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
@@ -31,7 +32,7 @@ export function ContinueWatching({ items }: { items: Anime[] | undefined }) {
               EP {ep}
             </div>
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-cr shadow-orange transition-transform group-hover:scale-110">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-cr shadow-orange transition-transform duration-300 group-hover:scale-110 animate-glow">
                 <Play className="h-5 w-5 fill-current text-background" />
               </div>
             </div>
