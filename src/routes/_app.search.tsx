@@ -31,7 +31,7 @@ function Search() {
         />
       </div>
 
-      <div className="-mx-5 mt-4 flex gap-2 overflow-x-auto px-5 scrollbar-hide">
+      <div className="-mx-5 mt-4 flex gap-2 overflow-x-auto px-5 scrollbar-hide smooth-scroll">
         {GENRES.map((g) => (
           <button
             key={g} onClick={() => setGenre(g)}

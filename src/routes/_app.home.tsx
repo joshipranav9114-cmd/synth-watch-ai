@@ -130,7 +130,7 @@ function Section({
         </button>
       </div>
       {wrap ? (
-        <div className="flex gap-4 overflow-x-auto px-5 pb-3 scrollbar-hide snap-x-mandatory">{children}</div>
+        <div className="flex gap-4 overflow-x-auto px-5 pb-3 scrollbar-hide snap-x-mandatory smooth-scroll">{children}</div>
       ) : (
         children
       )}

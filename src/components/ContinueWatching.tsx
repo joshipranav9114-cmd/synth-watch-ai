@@ -6,7 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export function ContinueWatching({ items }: { items: Anime[] | undefined }) {
   if (!items || items.length === 0) {
     return (
-      <div className="flex gap-4 overflow-x-auto px-5 pb-3 scrollbar-hide">
+      <div className="flex gap-4 overflow-x-auto px-5 pb-3 scrollbar-hide smooth-scroll">
         {Array.from({ length: 4 }).map((_, i) => (
           <Skeleton key={i} className="h-40 w-72 flex-shrink-0 rounded-2xl" />
         ))}
@@ -14,7 +14,7 @@ export function ContinueWatching({ items }: { items: Anime[] | undefined }) {
     );
   }
   return (
-    <div className="flex gap-4 overflow-x-auto px-5 pb-3 scrollbar-hide snap-x-mandatory">
+    <div className="flex gap-4 overflow-x-auto px-5 pb-3 scrollbar-hide snap-x-mandatory smooth-scroll">
       {items.map((a, i) => {
         const ep = (i % 12) + 1;
         const progress = 25 + ((i * 17) % 65);
