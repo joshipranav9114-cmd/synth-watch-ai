@@ -62,14 +62,14 @@ export function HeroCarousel() {
           <Link
             to="/anime/$id"
             params={{ id: a.id }}
-            className="flex h-12 items-center gap-2 rounded-full bg-gradient-cr px-7 text-sm font-bold uppercase tracking-[0.14em] text-background shadow-orange"
+            className="flex h-12 items-center gap-2 rounded-full bg-gradient-cr press animate-glow px-7 text-sm font-bold uppercase tracking-[0.14em] text-background shadow-orange"
           >
             <Play className="h-4 w-4 fill-current" /> Watch Now
           </Link>
           <Link
             to="/anime/$id"
             params={{ id: a.id }}
-            className="flex h-12 w-12 items-center justify-center rounded-full glass text-foreground"
+            className="flex h-12 w-12 items-center justify-center rounded-full glass press text-foreground"
             aria-label="Add to list"
           >
             <Plus className="h-5 w-5" />
@@ -77,7 +77,7 @@ export function HeroCarousel() {
           <Link
             to="/anime/$id"
             params={{ id: a.id }}
-            className="flex h-12 w-12 items-center justify-center rounded-full glass text-foreground"
+            className="flex h-12 w-12 items-center justify-center rounded-full glass press text-foreground"
             aria-label="More info"
           >
             <Info className="h-5 w-5" />
