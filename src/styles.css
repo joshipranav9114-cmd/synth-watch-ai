@@ -296,8 +296,9 @@
     background: linear-gradient(110deg, transparent 35%, oklch(1 0 0 / 35%) 50%, transparent 65%);
     animation: btnSheen 3.2s ease-in-out infinite;
     pointer-events: none;
-    z-index: 1;
+    z-index: 0;
   }
+  .btn-glow > * { position: relative; z-index: 1; }
 
   /* Floating hero — slow drift + parallax-feel breathing */
   @keyframes heroFloat {
