@@ -268,7 +268,59 @@
     transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
   }
   .press:hover { transform: translateY(-1px); }
-  .press:active { transform: scale(0.96); }
+  .press:active { transform: scale(0.92); }
+
+  /* Pronounced tap scale for cards */
+  .tap-scale { transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1); }
+  .tap-scale:active { transform: scale(0.94); }
+
+  /* Glowing button — animated gradient sheen + pulsing halo */
+  @keyframes btnHalo {
+    0%, 100% { box-shadow: 0 0 0 0 oklch(0.80 0.22 50 / 55%), 0 8px 28px -6px oklch(0.80 0.22 50 / 50%); }
+    50% { box-shadow: 0 0 0 8px oklch(0.80 0.22 50 / 0%), 0 14px 40px -6px oklch(0.80 0.22 50 / 75%); }
+  }
+  @keyframes btnSheen {
+    0% { transform: translateX(-120%) skewX(-20deg); }
+    60%, 100% { transform: translateX(220%) skewX(-20deg); }
+  }
+  .btn-glow {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    animation: btnHalo 2.4s ease-in-out infinite;
+  }
+  .btn-glow::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(110deg, transparent 35%, oklch(1 0 0 / 35%) 50%, transparent 65%);
+    animation: btnSheen 3.2s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Floating hero — slow drift + parallax-feel breathing */
+  @keyframes heroFloat {
+    0%, 100% { transform: scale(1.06) translateY(0); }
+    50% { transform: scale(1.08) translateY(-10px); }
+  }
+  .hero-float { animation: heroFloat 9s ease-in-out infinite; will-change: transform; }
+
+  /* Section fade-in (auto) */
+  @keyframes sectionFade {
+    0% { opacity: 0; transform: translateY(22px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  .section-fade { animation: sectionFade 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+  /* Bottom nav active indicator */
+  @keyframes navPop {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .nav-pop { animation: navPop 0.35s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .nav-item { transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1); }
+  .nav-item:active { transform: scale(0.88); }
 
   .glow-hover { transition: box-shadow 0.4s ease, transform 0.4s ease; }
   .glow-hover:hover { box-shadow: 0 0 30px oklch(0.80 0.22 50 / 55%), 0 0 60px oklch(0.80 0.22 50 / 25%); }
