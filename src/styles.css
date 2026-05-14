@@ -216,6 +216,69 @@
     50% { transform: translateY(-6px); }
   }
   .animate-float { animation: floatY 4s ease-in-out infinite; }
+
+  /* Premium streaming motion */
+  @keyframes fadeUp {
+    0% { opacity: 0; transform: translateY(14px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  @keyframes glowPulse {
+    0%, 100% { box-shadow: 0 0 14px oklch(0.80 0.22 50 / 35%); }
+    50% { box-shadow: 0 0 28px oklch(0.80 0.22 50 / 70%); }
+  }
+  @keyframes scaleIn {
+    0% { opacity: 0; transform: scale(0.96); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  .animate-fade-up { animation: fadeUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .animate-fade-in-soft { animation: fadeIn 0.6s ease-out both; }
+  .animate-scale-in { animation: scaleIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .animate-glow { animation: glowPulse 2.6s ease-in-out infinite; }
+
+  .stagger-1 { animation-delay: 0.05s; }
+  .stagger-2 { animation-delay: 0.12s; }
+  .stagger-3 { animation-delay: 0.2s; }
+  .stagger-4 { animation-delay: 0.28s; }
+  .stagger-5 { animation-delay: 0.36s; }
+
+  .smooth-scroll { scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
+
+  .card-interactive {
+    transition:
+      transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+      filter 0.4s ease;
+    will-change: transform;
+  }
+  .card-interactive:hover {
+    transform: translateY(-6px) scale(1.02);
+    filter: brightness(1.08);
+    box-shadow:
+      0 18px 40px -12px oklch(0 0 0 / 70%),
+      0 0 0 1px oklch(0.80 0.22 50 / 30%) inset,
+      0 0 32px oklch(0.80 0.22 50 / 35%);
+  }
+  .card-interactive:active { transform: translateY(-2px) scale(0.99); transition-duration: 0.15s; }
+
+  .press {
+    transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
+  }
+  .press:hover { transform: translateY(-1px); }
+  .press:active { transform: scale(0.96); }
+
+  .glow-hover { transition: box-shadow 0.4s ease, transform 0.4s ease; }
+  .glow-hover:hover { box-shadow: 0 0 30px oklch(0.80 0.22 50 / 55%), 0 0 60px oklch(0.80 0.22 50 / 25%); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-fade-up, .animate-fade-in-soft, .animate-scale-in, .animate-glow,
+    .animate-float, .animate-pulse-neon { animation: none !important; }
+    .card-interactive, .press, .glow-hover { transition: none !important; }
+  }
+
   @keyframes shimmerSlide {
     0% { transform: translateX(-100%); }
     100% { transform: translateX(200%); }
