@@ -21,7 +21,7 @@ export function HeroCarousel() {
         key={a.id}
         src={a.image}
         alt={a.title}
-        className="h-full w-full animate-[fade-in_0.8s_ease-out] object-cover scale-105"
+        className="h-full w-full object-cover hero-float animate-fade-in-soft"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
       <div className="absolute inset-0 bg-gradient-to-r from-background/85 via-background/30 to-transparent" />
@@ -62,7 +62,7 @@ export function HeroCarousel() {
           <Link
             to="/anime/$id"
             params={{ id: a.id }}
-            className="flex h-12 items-center gap-2 rounded-full bg-gradient-cr press animate-glow px-7 text-sm font-bold uppercase tracking-[0.14em] text-background shadow-orange"
+            className="btn-glow flex h-12 items-center gap-2 rounded-full bg-gradient-cr press px-7 text-sm font-bold uppercase tracking-[0.14em] text-background shadow-orange"
           >
             <Play className="h-4 w-4 fill-current" /> Watch Now
           </Link>

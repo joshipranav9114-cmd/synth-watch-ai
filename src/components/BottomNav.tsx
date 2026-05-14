@@ -20,16 +20,16 @@ export function BottomNav() {
             <Link
               key={to}
               to={to}
-              className="press flex flex-1 flex-col items-center gap-0.5 rounded-2xl px-2 py-1.5"
+              className="nav-item press flex flex-1 flex-col items-center gap-0.5 rounded-2xl px-2 py-1.5"
             >
               <div
-                className={`flex h-10 w-10 items-center justify-center rounded-xl transition-all duration-300 ${
-                  active ? "bg-gradient-hero shadow-neon scale-110 animate-glow" : "hover:bg-muted/40"
+                className={`relative flex h-10 w-10 items-center justify-center rounded-xl transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                  active ? "bg-gradient-hero shadow-neon scale-110 animate-glow nav-pop" : "hover:bg-muted/40 hover:scale-105"
                 }`}
               >
-                <Icon className={`h-5 w-5 ${active ? "text-primary-foreground" : "text-muted-foreground"}`} />
+                <Icon className={`h-5 w-5 transition-colors duration-300 ${active ? "text-primary-foreground" : "text-muted-foreground"}`} />
               </div>
-              <span className={`text-[10px] font-bold uppercase tracking-wider ${active ? "text-neon-orange" : "text-muted-foreground"}`}>
+              <span className={`text-[10px] font-bold uppercase tracking-wider transition-colors duration-300 ${active ? "text-neon-orange" : "text-muted-foreground"}`}>
                 {label}
               </span>
             </Link>

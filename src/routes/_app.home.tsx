@@ -38,7 +38,7 @@ function Home() {
 
       <HeroCarousel />
 
-      <section className="px-5 pt-6">
+      <section className="px-5 pt-6 section-fade">
         <div className="flex items-end justify-between">
           <div>
             <p className="heading-eyebrow text-neon-orange">Welcome back</p>
@@ -49,7 +49,7 @@ function Home() {
           <Link
             to="/anime/$id"
             params={{ id: featured?.[0]?.id ?? "21" }}
-            className="flex items-center gap-2 rounded-full bg-gradient-cr px-4 py-2 text-[11px] font-black uppercase tracking-widest text-background shadow-orange"
+            className="btn-glow flex items-center gap-2 rounded-full bg-gradient-cr px-4 py-2 text-[11px] font-black uppercase tracking-widest text-background shadow-orange"
           >
             <Play className="h-3.5 w-3.5 fill-current" /> Resume
           </Link>
@@ -76,10 +76,10 @@ function Home() {
         <CardRow items={seasonal} size="xl" />
       </Section>
 
-      <section className="px-5 pt-8">
+      <section className="px-5 pt-8 section-fade">
         <Link
           to="/assistant"
-          className="relative block overflow-hidden rounded-3xl bg-gradient-hero p-5 shadow-neon"
+          className="relative block overflow-hidden rounded-3xl bg-gradient-hero p-5 shadow-neon card-interactive btn-glow"
         >
           <div className="absolute -right-6 -top-6 h-32 w-32 rounded-full bg-neon-orange/40 blur-3xl" />
           <div className="absolute -bottom-8 -left-4 h-32 w-32 rounded-full bg-neon-blue/40 blur-3xl" />
