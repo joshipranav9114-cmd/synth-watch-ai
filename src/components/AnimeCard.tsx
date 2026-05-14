@@ -17,7 +17,7 @@ export function AnimeCard({
   const h =
     size === "xl" ? "h-72" : size === "lg" ? "h-64" : size === "sm" ? "h-40" : "h-52";
   return (
-    <Link to="/anime/$id" params={{ id: anime.id }} className={`group flex-shrink-0 ${w} animate-fade-up`}>
+    <Link to="/anime/$id" params={{ id: anime.id }} className={`group flex-shrink-0 ${w} animate-fade-up tap-scale`}>
       <div className={`relative ${h} overflow-hidden rounded-2xl card-glow card-interactive`}>
         <img
           src={anime.image}
