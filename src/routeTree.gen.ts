@@ -18,6 +18,7 @@ import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AppWatchlistRouteImport } from './routes/_app.watchlist'
 import { Route as AppSearchRouteImport } from './routes/_app.search'
 import { Route as AppProfileRouteImport } from './routes/_app.profile'
+import { Route as AppLatestEpisodesRouteImport } from './routes/_app.latest-episodes'
 import { Route as AppHomeRouteImport } from './routes/_app.home'
 import { Route as AppContinueWatchingRouteImport } from './routes/_app.continue-watching'
 import { Route as AppAssistantRouteImport } from './routes/_app.assistant'
@@ -67,6 +68,11 @@ const AppProfileRoute = AppProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => AppRoute,
 } as any)
+const AppLatestEpisodesRoute = AppLatestEpisodesRouteImport.update({
+  id: '/latest-episodes',
+  path: '/latest-episodes',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppHomeRoute = AppHomeRouteImport.update({
   id: '/home',
   path: '/home',
@@ -96,6 +102,7 @@ export interface FileRoutesByFullPath {
   '/assistant': typeof AppAssistantRoute
   '/continue-watching': typeof AppContinueWatchingRoute
   '/home': typeof AppHomeRoute
+  '/latest-episodes': typeof AppLatestEpisodesRoute
   '/profile': typeof AppProfileRoute
   '/search': typeof AppSearchRoute
   '/watchlist': typeof AppWatchlistRoute
@@ -110,6 +117,7 @@ export interface FileRoutesByTo {
   '/assistant': typeof AppAssistantRoute
   '/continue-watching': typeof AppContinueWatchingRoute
   '/home': typeof AppHomeRoute
+  '/latest-episodes': typeof AppLatestEpisodesRoute
   '/profile': typeof AppProfileRoute
   '/search': typeof AppSearchRoute
   '/watchlist': typeof AppWatchlistRoute
@@ -126,6 +134,7 @@ export interface FileRoutesById {
   '/_app/assistant': typeof AppAssistantRoute
   '/_app/continue-watching': typeof AppContinueWatchingRoute
   '/_app/home': typeof AppHomeRoute
+  '/_app/latest-episodes': typeof AppLatestEpisodesRoute
   '/_app/profile': typeof AppProfileRoute
   '/_app/search': typeof AppSearchRoute
   '/_app/watchlist': typeof AppWatchlistRoute
@@ -142,6 +151,7 @@ export interface FileRouteTypes {
     | '/assistant'
     | '/continue-watching'
     | '/home'
+    | '/latest-episodes'
     | '/profile'
     | '/search'
     | '/watchlist'
@@ -156,6 +166,7 @@ export interface FileRouteTypes {
     | '/assistant'
     | '/continue-watching'
     | '/home'
+    | '/latest-episodes'
     | '/profile'
     | '/search'
     | '/watchlist'
@@ -171,6 +182,7 @@ export interface FileRouteTypes {
     | '/_app/assistant'
     | '/_app/continue-watching'
     | '/_app/home'
+    | '/_app/latest-episodes'
     | '/_app/profile'
     | '/_app/search'
     | '/_app/watchlist'
@@ -252,6 +264,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProfileRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/latest-episodes': {
+      id: '/_app/latest-episodes'
+      path: '/latest-episodes'
+      fullPath: '/latest-episodes'
+      preLoaderRoute: typeof AppLatestEpisodesRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/home': {
       id: '/_app/home'
       path: '/home'
@@ -287,6 +306,7 @@ interface AppRouteChildren {
   AppAssistantRoute: typeof AppAssistantRoute
   AppContinueWatchingRoute: typeof AppContinueWatchingRoute
   AppHomeRoute: typeof AppHomeRoute
+  AppLatestEpisodesRoute: typeof AppLatestEpisodesRoute
   AppProfileRoute: typeof AppProfileRoute
   AppSearchRoute: typeof AppSearchRoute
   AppWatchlistRoute: typeof AppWatchlistRoute
@@ -297,6 +317,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppAssistantRoute: AppAssistantRoute,
   AppContinueWatchingRoute: AppContinueWatchingRoute,
   AppHomeRoute: AppHomeRoute,
+  AppLatestEpisodesRoute: AppLatestEpisodesRoute,
   AppProfileRoute: AppProfileRoute,
   AppSearchRoute: AppSearchRoute,
   AppWatchlistRoute: AppWatchlistRoute,
