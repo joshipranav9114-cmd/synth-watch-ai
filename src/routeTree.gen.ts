@@ -16,6 +16,7 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AppWatchlistRouteImport } from './routes/_app.watchlist'
+import { Route as AppTrendingRouteImport } from './routes/_app.trending'
 import { Route as AppSearchRouteImport } from './routes/_app.search'
 import { Route as AppProfileRouteImport } from './routes/_app.profile'
 import { Route as AppLatestEpisodesRouteImport } from './routes/_app.latest-episodes'
@@ -57,6 +58,11 @@ const ApiChatRoute = ApiChatRouteImport.update({
 const AppWatchlistRoute = AppWatchlistRouteImport.update({
   id: '/watchlist',
   path: '/watchlist',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppTrendingRoute = AppTrendingRouteImport.update({
+  id: '/trending',
+  path: '/trending',
   getParentRoute: () => AppRoute,
 } as any)
 const AppSearchRoute = AppSearchRouteImport.update({
@@ -112,6 +118,7 @@ export interface FileRoutesByFullPath {
   '/latest-episodes': typeof AppLatestEpisodesRoute
   '/profile': typeof AppProfileRoute
   '/search': typeof AppSearchRoute
+  '/trending': typeof AppTrendingRoute
   '/watchlist': typeof AppWatchlistRoute
   '/api/chat': typeof ApiChatRoute
   '/anime/$id': typeof AppAnimeIdRoute
@@ -128,6 +135,7 @@ export interface FileRoutesByTo {
   '/latest-episodes': typeof AppLatestEpisodesRoute
   '/profile': typeof AppProfileRoute
   '/search': typeof AppSearchRoute
+  '/trending': typeof AppTrendingRoute
   '/watchlist': typeof AppWatchlistRoute
   '/api/chat': typeof ApiChatRoute
   '/anime/$id': typeof AppAnimeIdRoute
@@ -146,6 +154,7 @@ export interface FileRoutesById {
   '/_app/latest-episodes': typeof AppLatestEpisodesRoute
   '/_app/profile': typeof AppProfileRoute
   '/_app/search': typeof AppSearchRoute
+  '/_app/trending': typeof AppTrendingRoute
   '/_app/watchlist': typeof AppWatchlistRoute
   '/api/chat': typeof ApiChatRoute
   '/_app/anime/$id': typeof AppAnimeIdRoute
@@ -164,6 +173,7 @@ export interface FileRouteTypes {
     | '/latest-episodes'
     | '/profile'
     | '/search'
+    | '/trending'
     | '/watchlist'
     | '/api/chat'
     | '/anime/$id'
@@ -180,6 +190,7 @@ export interface FileRouteTypes {
     | '/latest-episodes'
     | '/profile'
     | '/search'
+    | '/trending'
     | '/watchlist'
     | '/api/chat'
     | '/anime/$id'
@@ -197,6 +208,7 @@ export interface FileRouteTypes {
     | '/_app/latest-episodes'
     | '/_app/profile'
     | '/_app/search'
+    | '/_app/trending'
     | '/_app/watchlist'
     | '/api/chat'
     | '/_app/anime/$id'
@@ -260,6 +272,13 @@ declare module '@tanstack/react-router' {
       path: '/watchlist'
       fullPath: '/watchlist'
       preLoaderRoute: typeof AppWatchlistRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/trending': {
+      id: '/_app/trending'
+      path: '/trending'
+      fullPath: '/trending'
+      preLoaderRoute: typeof AppTrendingRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/search': {
@@ -329,6 +348,7 @@ interface AppRouteChildren {
   AppLatestEpisodesRoute: typeof AppLatestEpisodesRoute
   AppProfileRoute: typeof AppProfileRoute
   AppSearchRoute: typeof AppSearchRoute
+  AppTrendingRoute: typeof AppTrendingRoute
   AppWatchlistRoute: typeof AppWatchlistRoute
   AppAnimeIdRoute: typeof AppAnimeIdRoute
 }
@@ -341,6 +361,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppLatestEpisodesRoute: AppLatestEpisodesRoute,
   AppProfileRoute: AppProfileRoute,
   AppSearchRoute: AppSearchRoute,
+  AppTrendingRoute: AppTrendingRoute,
   AppWatchlistRoute: AppWatchlistRoute,
   AppAnimeIdRoute: AppAnimeIdRoute,
 }
