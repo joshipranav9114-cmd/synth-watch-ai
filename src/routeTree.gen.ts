@@ -19,6 +19,7 @@ import { Route as AppWatchlistRouteImport } from './routes/_app.watchlist'
 import { Route as AppSearchRouteImport } from './routes/_app.search'
 import { Route as AppProfileRouteImport } from './routes/_app.profile'
 import { Route as AppHomeRouteImport } from './routes/_app.home'
+import { Route as AppContinueWatchingRouteImport } from './routes/_app.continue-watching'
 import { Route as AppAssistantRouteImport } from './routes/_app.assistant'
 import { Route as AppAnimeIdRouteImport } from './routes/_app.anime.$id'
 
@@ -71,6 +72,11 @@ const AppHomeRoute = AppHomeRouteImport.update({
   path: '/home',
   getParentRoute: () => AppRoute,
 } as any)
+const AppContinueWatchingRoute = AppContinueWatchingRouteImport.update({
+  id: '/continue-watching',
+  path: '/continue-watching',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppAssistantRoute = AppAssistantRouteImport.update({
   id: '/assistant',
   path: '/assistant',
@@ -88,6 +94,7 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof OnboardingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/assistant': typeof AppAssistantRoute
+  '/continue-watching': typeof AppContinueWatchingRoute
   '/home': typeof AppHomeRoute
   '/profile': typeof AppProfileRoute
   '/search': typeof AppSearchRoute
@@ -101,6 +108,7 @@ export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/assistant': typeof AppAssistantRoute
+  '/continue-watching': typeof AppContinueWatchingRoute
   '/home': typeof AppHomeRoute
   '/profile': typeof AppProfileRoute
   '/search': typeof AppSearchRoute
@@ -116,6 +124,7 @@ export interface FileRoutesById {
   '/onboarding': typeof OnboardingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/_app/assistant': typeof AppAssistantRoute
+  '/_app/continue-watching': typeof AppContinueWatchingRoute
   '/_app/home': typeof AppHomeRoute
   '/_app/profile': typeof AppProfileRoute
   '/_app/search': typeof AppSearchRoute
@@ -131,6 +140,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/reset-password'
     | '/assistant'
+    | '/continue-watching'
     | '/home'
     | '/profile'
     | '/search'
@@ -144,6 +154,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/reset-password'
     | '/assistant'
+    | '/continue-watching'
     | '/home'
     | '/profile'
     | '/search'
@@ -158,6 +169,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/reset-password'
     | '/_app/assistant'
+    | '/_app/continue-watching'
     | '/_app/home'
     | '/_app/profile'
     | '/_app/search'
@@ -247,6 +259,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppHomeRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/continue-watching': {
+      id: '/_app/continue-watching'
+      path: '/continue-watching'
+      fullPath: '/continue-watching'
+      preLoaderRoute: typeof AppContinueWatchingRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/assistant': {
       id: '/_app/assistant'
       path: '/assistant'
@@ -266,6 +285,7 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteChildren {
   AppAssistantRoute: typeof AppAssistantRoute
+  AppContinueWatchingRoute: typeof AppContinueWatchingRoute
   AppHomeRoute: typeof AppHomeRoute
   AppProfileRoute: typeof AppProfileRoute
   AppSearchRoute: typeof AppSearchRoute
@@ -275,6 +295,7 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppAssistantRoute: AppAssistantRoute,
+  AppContinueWatchingRoute: AppContinueWatchingRoute,
   AppHomeRoute: AppHomeRoute,
   AppProfileRoute: AppProfileRoute,
   AppSearchRoute: AppSearchRoute,
