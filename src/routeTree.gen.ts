@@ -20,6 +20,7 @@ import { Route as AppSearchRouteImport } from './routes/_app.search'
 import { Route as AppProfileRouteImport } from './routes/_app.profile'
 import { Route as AppLatestEpisodesRouteImport } from './routes/_app.latest-episodes'
 import { Route as AppHomeRouteImport } from './routes/_app.home'
+import { Route as AppForYouRouteImport } from './routes/_app.for-you'
 import { Route as AppContinueWatchingRouteImport } from './routes/_app.continue-watching'
 import { Route as AppAssistantRouteImport } from './routes/_app.assistant'
 import { Route as AppAnimeIdRouteImport } from './routes/_app.anime.$id'
@@ -78,6 +79,11 @@ const AppHomeRoute = AppHomeRouteImport.update({
   path: '/home',
   getParentRoute: () => AppRoute,
 } as any)
+const AppForYouRoute = AppForYouRouteImport.update({
+  id: '/for-you',
+  path: '/for-you',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppContinueWatchingRoute = AppContinueWatchingRouteImport.update({
   id: '/continue-watching',
   path: '/continue-watching',
@@ -101,6 +107,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/assistant': typeof AppAssistantRoute
   '/continue-watching': typeof AppContinueWatchingRoute
+  '/for-you': typeof AppForYouRoute
   '/home': typeof AppHomeRoute
   '/latest-episodes': typeof AppLatestEpisodesRoute
   '/profile': typeof AppProfileRoute
@@ -116,6 +123,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/assistant': typeof AppAssistantRoute
   '/continue-watching': typeof AppContinueWatchingRoute
+  '/for-you': typeof AppForYouRoute
   '/home': typeof AppHomeRoute
   '/latest-episodes': typeof AppLatestEpisodesRoute
   '/profile': typeof AppProfileRoute
@@ -133,6 +141,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/_app/assistant': typeof AppAssistantRoute
   '/_app/continue-watching': typeof AppContinueWatchingRoute
+  '/_app/for-you': typeof AppForYouRoute
   '/_app/home': typeof AppHomeRoute
   '/_app/latest-episodes': typeof AppLatestEpisodesRoute
   '/_app/profile': typeof AppProfileRoute
@@ -150,6 +159,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/assistant'
     | '/continue-watching'
+    | '/for-you'
     | '/home'
     | '/latest-episodes'
     | '/profile'
@@ -165,6 +175,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/assistant'
     | '/continue-watching'
+    | '/for-you'
     | '/home'
     | '/latest-episodes'
     | '/profile'
@@ -181,6 +192,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/_app/assistant'
     | '/_app/continue-watching'
+    | '/_app/for-you'
     | '/_app/home'
     | '/_app/latest-episodes'
     | '/_app/profile'
@@ -278,6 +290,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppHomeRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/for-you': {
+      id: '/_app/for-you'
+      path: '/for-you'
+      fullPath: '/for-you'
+      preLoaderRoute: typeof AppForYouRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/continue-watching': {
       id: '/_app/continue-watching'
       path: '/continue-watching'
@@ -305,6 +324,7 @@ declare module '@tanstack/react-router' {
 interface AppRouteChildren {
   AppAssistantRoute: typeof AppAssistantRoute
   AppContinueWatchingRoute: typeof AppContinueWatchingRoute
+  AppForYouRoute: typeof AppForYouRoute
   AppHomeRoute: typeof AppHomeRoute
   AppLatestEpisodesRoute: typeof AppLatestEpisodesRoute
   AppProfileRoute: typeof AppProfileRoute
@@ -316,6 +336,7 @@ interface AppRouteChildren {
 const AppRouteChildren: AppRouteChildren = {
   AppAssistantRoute: AppAssistantRoute,
   AppContinueWatchingRoute: AppContinueWatchingRoute,
+  AppForYouRoute: AppForYouRoute,
   AppHomeRoute: AppHomeRoute,
   AppLatestEpisodesRoute: AppLatestEpisodesRoute,
   AppProfileRoute: AppProfileRoute,
