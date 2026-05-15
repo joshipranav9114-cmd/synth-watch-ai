@@ -17,6 +17,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AppWatchlistRouteImport } from './routes/_app.watchlist'
 import { Route as AppTrendingRouteImport } from './routes/_app.trending'
+import { Route as AppSimulcastRouteImport } from './routes/_app.simulcast'
 import { Route as AppSearchRouteImport } from './routes/_app.search'
 import { Route as AppProfileRouteImport } from './routes/_app.profile'
 import { Route as AppLatestEpisodesRouteImport } from './routes/_app.latest-episodes'
@@ -63,6 +64,11 @@ const AppWatchlistRoute = AppWatchlistRouteImport.update({
 const AppTrendingRoute = AppTrendingRouteImport.update({
   id: '/trending',
   path: '/trending',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSimulcastRoute = AppSimulcastRouteImport.update({
+  id: '/simulcast',
+  path: '/simulcast',
   getParentRoute: () => AppRoute,
 } as any)
 const AppSearchRoute = AppSearchRouteImport.update({
@@ -118,6 +124,7 @@ export interface FileRoutesByFullPath {
   '/latest-episodes': typeof AppLatestEpisodesRoute
   '/profile': typeof AppProfileRoute
   '/search': typeof AppSearchRoute
+  '/simulcast': typeof AppSimulcastRoute
   '/trending': typeof AppTrendingRoute
   '/watchlist': typeof AppWatchlistRoute
   '/api/chat': typeof ApiChatRoute
@@ -135,6 +142,7 @@ export interface FileRoutesByTo {
   '/latest-episodes': typeof AppLatestEpisodesRoute
   '/profile': typeof AppProfileRoute
   '/search': typeof AppSearchRoute
+  '/simulcast': typeof AppSimulcastRoute
   '/trending': typeof AppTrendingRoute
   '/watchlist': typeof AppWatchlistRoute
   '/api/chat': typeof ApiChatRoute
@@ -154,6 +162,7 @@ export interface FileRoutesById {
   '/_app/latest-episodes': typeof AppLatestEpisodesRoute
   '/_app/profile': typeof AppProfileRoute
   '/_app/search': typeof AppSearchRoute
+  '/_app/simulcast': typeof AppSimulcastRoute
   '/_app/trending': typeof AppTrendingRoute
   '/_app/watchlist': typeof AppWatchlistRoute
   '/api/chat': typeof ApiChatRoute
@@ -173,6 +182,7 @@ export interface FileRouteTypes {
     | '/latest-episodes'
     | '/profile'
     | '/search'
+    | '/simulcast'
     | '/trending'
     | '/watchlist'
     | '/api/chat'
@@ -190,6 +200,7 @@ export interface FileRouteTypes {
     | '/latest-episodes'
     | '/profile'
     | '/search'
+    | '/simulcast'
     | '/trending'
     | '/watchlist'
     | '/api/chat'
@@ -208,6 +219,7 @@ export interface FileRouteTypes {
     | '/_app/latest-episodes'
     | '/_app/profile'
     | '/_app/search'
+    | '/_app/simulcast'
     | '/_app/trending'
     | '/_app/watchlist'
     | '/api/chat'
@@ -281,6 +293,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppTrendingRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/simulcast': {
+      id: '/_app/simulcast'
+      path: '/simulcast'
+      fullPath: '/simulcast'
+      preLoaderRoute: typeof AppSimulcastRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/search': {
       id: '/_app/search'
       path: '/search'
@@ -348,6 +367,7 @@ interface AppRouteChildren {
   AppLatestEpisodesRoute: typeof AppLatestEpisodesRoute
   AppProfileRoute: typeof AppProfileRoute
   AppSearchRoute: typeof AppSearchRoute
+  AppSimulcastRoute: typeof AppSimulcastRoute
   AppTrendingRoute: typeof AppTrendingRoute
   AppWatchlistRoute: typeof AppWatchlistRoute
   AppAnimeIdRoute: typeof AppAnimeIdRoute
@@ -361,6 +381,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppLatestEpisodesRoute: AppLatestEpisodesRoute,
   AppProfileRoute: AppProfileRoute,
   AppSearchRoute: AppSearchRoute,
+  AppSimulcastRoute: AppSimulcastRoute,
   AppTrendingRoute: AppTrendingRoute,
   AppWatchlistRoute: AppWatchlistRoute,
   AppAnimeIdRoute: AppAnimeIdRoute,
@@ -379,3 +400,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
