@@ -56,23 +56,23 @@ function Home() {
         </div>
       </section>
 
-      <Section title="Continue Watching" subtitle="Pick up where you left off" icon={<Zap className="h-3 w-3" />} accent="text-neon-orange" wrap={false}>
+      <Section title="Continue Watching" subtitle="Pick up where you left off" icon={<Zap className="h-3 w-3" />} accent="text-neon-orange" wrap={false} viewAllLink="/continue-watching">
         <ContinueWatching items={featured} />
       </Section>
 
-      <Section title="Latest Episodes" subtitle="Fresh Drops" icon={<Flame className="h-3 w-3" />} accent="text-neon-pink" wrap={false}>
+      <Section title="Latest Episodes" subtitle="Fresh Drops" icon={<Flame className="h-3 w-3" />} accent="text-neon-pink" wrap={false} viewAllLink="/latest-episodes">
         <EpisodeRow items={seasonal} />
       </Section>
 
-      <Section title="For You" subtitle="AI Curated" icon={<Sparkles className="h-3 w-3" />} accent="text-neon-purple">
+      <Section title="For You" subtitle="AI Curated" icon={<Sparkles className="h-3 w-3" />} accent="text-neon-purple" viewAllLink="/for-you">
         <CardRow items={featured} size="lg" />
       </Section>
 
-      <Section title="Top 10 This Week" subtitle="Trending Now" icon={<TrendingUp className="h-3 w-3" />} accent="text-neon-orange">
+      <Section title="Top 10 This Week" subtitle="Trending Now" icon={<TrendingUp className="h-3 w-3" />} accent="text-neon-orange" viewAllLink="/trending">
         <CardRow items={trending?.slice(0, 10)} size="xl" ranked />
       </Section>
 
-      <Section title="Simulcast Season" subtitle="This Season" icon={<Flame className="h-3 w-3" />} accent="text-neon-cyan">
+      <Section title="Simulcast Season" subtitle="This Season" icon={<Flame className="h-3 w-3" />} accent="text-neon-cyan" viewAllLink="/simulcast">
         <CardRow items={seasonal} size="xl" />
       </Section>
 
@@ -108,6 +108,7 @@ function Section({
   accent = "text-neon-cyan",
   children,
   wrap = true,
+  viewAllLink,
 }: {
   title: string;
   subtitle: string;
@@ -115,6 +116,7 @@ function Section({
   accent?: string;
   children: React.ReactNode;
   wrap?: boolean;
+  viewAllLink?: string;
 }) {
   return (
     <section className="pt-7 animate-fade-up">
@@ -125,9 +127,18 @@ function Section({
           </p>
           <h3 className="heading-3 text-foreground">{title}</h3>
         </div>
-        <button className="rounded-full glass press px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-foreground">
-          View all
-        </button>
+        {viewAllLink ? (
+          <Link
+            to={viewAllLink}
+            className="rounded-full glass press px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-foreground"
+          >
+            View all
+          </Link>
+        ) : (
+          <button className="rounded-full glass press px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-foreground">
+            View all
+          </button>
+        )}
       </div>
       {wrap ? (
         <div className="flex gap-4 overflow-x-auto px-5 pb-3 scrollbar-hide snap-x-mandatory smooth-scroll">{children}</div>

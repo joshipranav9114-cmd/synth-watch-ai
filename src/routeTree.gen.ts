@@ -16,9 +16,14 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AppWatchlistRouteImport } from './routes/_app.watchlist'
+import { Route as AppTrendingRouteImport } from './routes/_app.trending'
+import { Route as AppSimulcastRouteImport } from './routes/_app.simulcast'
 import { Route as AppSearchRouteImport } from './routes/_app.search'
 import { Route as AppProfileRouteImport } from './routes/_app.profile'
+import { Route as AppLatestEpisodesRouteImport } from './routes/_app.latest-episodes'
 import { Route as AppHomeRouteImport } from './routes/_app.home'
+import { Route as AppForYouRouteImport } from './routes/_app.for-you'
+import { Route as AppContinueWatchingRouteImport } from './routes/_app.continue-watching'
 import { Route as AppAssistantRouteImport } from './routes/_app.assistant'
 import { Route as AppAnimeIdRouteImport } from './routes/_app.anime.$id'
 
@@ -56,6 +61,16 @@ const AppWatchlistRoute = AppWatchlistRouteImport.update({
   path: '/watchlist',
   getParentRoute: () => AppRoute,
 } as any)
+const AppTrendingRoute = AppTrendingRouteImport.update({
+  id: '/trending',
+  path: '/trending',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSimulcastRoute = AppSimulcastRouteImport.update({
+  id: '/simulcast',
+  path: '/simulcast',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppSearchRoute = AppSearchRouteImport.update({
   id: '/search',
   path: '/search',
@@ -66,9 +81,24 @@ const AppProfileRoute = AppProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => AppRoute,
 } as any)
+const AppLatestEpisodesRoute = AppLatestEpisodesRouteImport.update({
+  id: '/latest-episodes',
+  path: '/latest-episodes',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppHomeRoute = AppHomeRouteImport.update({
   id: '/home',
   path: '/home',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppForYouRoute = AppForYouRouteImport.update({
+  id: '/for-you',
+  path: '/for-you',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppContinueWatchingRoute = AppContinueWatchingRouteImport.update({
+  id: '/continue-watching',
+  path: '/continue-watching',
   getParentRoute: () => AppRoute,
 } as any)
 const AppAssistantRoute = AppAssistantRouteImport.update({
@@ -88,9 +118,14 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof OnboardingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/assistant': typeof AppAssistantRoute
+  '/continue-watching': typeof AppContinueWatchingRoute
+  '/for-you': typeof AppForYouRoute
   '/home': typeof AppHomeRoute
+  '/latest-episodes': typeof AppLatestEpisodesRoute
   '/profile': typeof AppProfileRoute
   '/search': typeof AppSearchRoute
+  '/simulcast': typeof AppSimulcastRoute
+  '/trending': typeof AppTrendingRoute
   '/watchlist': typeof AppWatchlistRoute
   '/api/chat': typeof ApiChatRoute
   '/anime/$id': typeof AppAnimeIdRoute
@@ -101,9 +136,14 @@ export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/assistant': typeof AppAssistantRoute
+  '/continue-watching': typeof AppContinueWatchingRoute
+  '/for-you': typeof AppForYouRoute
   '/home': typeof AppHomeRoute
+  '/latest-episodes': typeof AppLatestEpisodesRoute
   '/profile': typeof AppProfileRoute
   '/search': typeof AppSearchRoute
+  '/simulcast': typeof AppSimulcastRoute
+  '/trending': typeof AppTrendingRoute
   '/watchlist': typeof AppWatchlistRoute
   '/api/chat': typeof ApiChatRoute
   '/anime/$id': typeof AppAnimeIdRoute
@@ -116,9 +156,14 @@ export interface FileRoutesById {
   '/onboarding': typeof OnboardingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/_app/assistant': typeof AppAssistantRoute
+  '/_app/continue-watching': typeof AppContinueWatchingRoute
+  '/_app/for-you': typeof AppForYouRoute
   '/_app/home': typeof AppHomeRoute
+  '/_app/latest-episodes': typeof AppLatestEpisodesRoute
   '/_app/profile': typeof AppProfileRoute
   '/_app/search': typeof AppSearchRoute
+  '/_app/simulcast': typeof AppSimulcastRoute
+  '/_app/trending': typeof AppTrendingRoute
   '/_app/watchlist': typeof AppWatchlistRoute
   '/api/chat': typeof ApiChatRoute
   '/_app/anime/$id': typeof AppAnimeIdRoute
@@ -131,9 +176,14 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/reset-password'
     | '/assistant'
+    | '/continue-watching'
+    | '/for-you'
     | '/home'
+    | '/latest-episodes'
     | '/profile'
     | '/search'
+    | '/simulcast'
+    | '/trending'
     | '/watchlist'
     | '/api/chat'
     | '/anime/$id'
@@ -144,9 +194,14 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/reset-password'
     | '/assistant'
+    | '/continue-watching'
+    | '/for-you'
     | '/home'
+    | '/latest-episodes'
     | '/profile'
     | '/search'
+    | '/simulcast'
+    | '/trending'
     | '/watchlist'
     | '/api/chat'
     | '/anime/$id'
@@ -158,9 +213,14 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/reset-password'
     | '/_app/assistant'
+    | '/_app/continue-watching'
+    | '/_app/for-you'
     | '/_app/home'
+    | '/_app/latest-episodes'
     | '/_app/profile'
     | '/_app/search'
+    | '/_app/simulcast'
+    | '/_app/trending'
     | '/_app/watchlist'
     | '/api/chat'
     | '/_app/anime/$id'
@@ -226,6 +286,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppWatchlistRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/trending': {
+      id: '/_app/trending'
+      path: '/trending'
+      fullPath: '/trending'
+      preLoaderRoute: typeof AppTrendingRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/simulcast': {
+      id: '/_app/simulcast'
+      path: '/simulcast'
+      fullPath: '/simulcast'
+      preLoaderRoute: typeof AppSimulcastRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/search': {
       id: '/_app/search'
       path: '/search'
@@ -240,11 +314,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProfileRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/latest-episodes': {
+      id: '/_app/latest-episodes'
+      path: '/latest-episodes'
+      fullPath: '/latest-episodes'
+      preLoaderRoute: typeof AppLatestEpisodesRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/home': {
       id: '/_app/home'
       path: '/home'
       fullPath: '/home'
       preLoaderRoute: typeof AppHomeRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/for-you': {
+      id: '/_app/for-you'
+      path: '/for-you'
+      fullPath: '/for-you'
+      preLoaderRoute: typeof AppForYouRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/continue-watching': {
+      id: '/_app/continue-watching'
+      path: '/continue-watching'
+      fullPath: '/continue-watching'
+      preLoaderRoute: typeof AppContinueWatchingRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/assistant': {
@@ -266,18 +361,28 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteChildren {
   AppAssistantRoute: typeof AppAssistantRoute
+  AppContinueWatchingRoute: typeof AppContinueWatchingRoute
+  AppForYouRoute: typeof AppForYouRoute
   AppHomeRoute: typeof AppHomeRoute
+  AppLatestEpisodesRoute: typeof AppLatestEpisodesRoute
   AppProfileRoute: typeof AppProfileRoute
   AppSearchRoute: typeof AppSearchRoute
+  AppSimulcastRoute: typeof AppSimulcastRoute
+  AppTrendingRoute: typeof AppTrendingRoute
   AppWatchlistRoute: typeof AppWatchlistRoute
   AppAnimeIdRoute: typeof AppAnimeIdRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppAssistantRoute: AppAssistantRoute,
+  AppContinueWatchingRoute: AppContinueWatchingRoute,
+  AppForYouRoute: AppForYouRoute,
   AppHomeRoute: AppHomeRoute,
+  AppLatestEpisodesRoute: AppLatestEpisodesRoute,
   AppProfileRoute: AppProfileRoute,
   AppSearchRoute: AppSearchRoute,
+  AppSimulcastRoute: AppSimulcastRoute,
+  AppTrendingRoute: AppTrendingRoute,
   AppWatchlistRoute: AppWatchlistRoute,
   AppAnimeIdRoute: AppAnimeIdRoute,
 }
@@ -295,3 +400,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
