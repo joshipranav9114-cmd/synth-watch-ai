@@ -108,6 +108,7 @@ function Section({
   accent = "text-neon-cyan",
   children,
   wrap = true,
+  viewAllLink,
 }: {
   title: string;
   subtitle: string;
@@ -115,6 +116,7 @@ function Section({
   accent?: string;
   children: React.ReactNode;
   wrap?: boolean;
+  viewAllLink?: string;
 }) {
   return (
     <section className="pt-7 animate-fade-up">
@@ -125,9 +127,18 @@ function Section({
           </p>
           <h3 className="heading-3 text-foreground">{title}</h3>
         </div>
-        <button className="rounded-full glass press px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-foreground">
-          View all
-        </button>
+        {viewAllLink ? (
+          <Link
+            to={viewAllLink}
+            className="rounded-full glass press px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-foreground"
+          >
+            View all
+          </Link>
+        ) : (
+          <button className="rounded-full glass press px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-foreground">
+            View all
+          </button>
+        )}
       </div>
       {wrap ? (
         <div className="flex gap-4 overflow-x-auto px-5 pb-3 scrollbar-hide snap-x-mandatory smooth-scroll">{children}</div>
