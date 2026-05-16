@@ -1,13 +1,27 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { LogOut, Settings, Shield, Palette, Award } from "lucide-react";
+import { useState } from "react";
+import { LogOut, Settings, Shield, Palette, Award, Star, MessageSquare } from "lucide-react";
 import { useAuth } from "@/lib/auth";
+import { UserAvatar } from "@/components/UserAvatar";
+import { getProfile, saveProfile, type UserProfile } from "@/lib/community";
 
 export const Route = createFileRoute("/_app/profile")({ component: Profile });
 
 function Profile() {
   const { user, signOut } = useAuth();
   const nav = useNavigate();
-  const name = user?.email?.split("@")[0] ?? "Pilot";
+  const emailName = user?.email?.split("@")[0] ?? "Pilot";
+
+  const [profile, setProfile] = useState<UserProfile>(() => {
+    if (!user) return { id: "guest", display_name: emailName, avatar_emoji: "⭐", avatar_color: "purple" };
+    const p = getProfile(user.id);
+    if (p.display_name === "Anon") {
+      const updated = { ...p, display_name: emailName };
+      saveProfile(updated);
+      return updated;
+    }
+    return p;
+  });
 
   const items = [
     { icon: Settings, label: "Account Settings" },
@@ -16,21 +30,37 @@ function Profile() {
   ];
 
   return (
-    <main className="px-5 pt-10">
+    <main className="px-5 pt-10 pb-28">
       <div className="flex flex-col items-center">
-        <div className="relative h-32 w-32 rounded-full bg-gradient-hero p-1 shadow-neon animate-pulse-neon">
-          <div className="flex h-full w-full items-center justify-center rounded-full bg-card text-4xl font-bold capitalize text-gradient-neon">
-            {name[0]}
-          </div>
-          <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 rounded-full bg-secondary px-3 py-0.5 text-[10px] font-bold uppercase tracking-widest text-secondary-foreground">PRO</div>
+        <div className="relative">
+          <UserAvatar profile={profile} size="xl" editable={!!user} onUpdate={setProfile} />
+          <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 rounded-full bg-secondary px-3 py-0.5 text-[10px] font-bold uppercase tracking-widest text-secondary-foreground whitespace-nowrap">PRO</div>
         </div>
-        <h2 className="mt-5 text-2xl font-bold capitalize text-foreground">{name}</h2>
+        <h2 className="mt-5 text-2xl font-bold capitalize text-foreground">{profile.display_name}</h2>
         <span className="mt-2 inline-block rounded-full bg-primary/20 px-3 py-1 text-xs font-semibold text-neon-pink">Anime Soul: Seinen Expert</span>
+        <p className="mt-1 text-[11px] text-muted-foreground">Tap avatar to customise</p>
       </div>
 
       <div className="mt-6 grid grid-cols-2 gap-3">
         <Stat label="Anime Watched" value="248" color="text-neon-cyan" />
         <Stat label="Episodes" value="5,102" color="text-neon-pink" />
+      </div>
+
+      <div className="mt-3 grid grid-cols-2 gap-3">
+        <div className="flex items-center gap-2 rounded-2xl glass p-3">
+          <Star className="h-4 w-4 text-neon-orange" />
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Reviews</p>
+            <p className="text-sm font-extrabold text-neon-orange">0</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2 rounded-2xl glass p-3">
+          <MessageSquare className="h-4 w-4 text-neon-cyan" />
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Comments</p>
+            <p className="text-sm font-extrabold text-neon-cyan">0</p>
+          </div>
+        </div>
       </div>
 
       <div className="mt-6 rounded-3xl glass p-5">
@@ -58,7 +88,8 @@ function Profile() {
             <span className="text-muted-foreground">›</span>
           </button>
         ))}
-        <button onClick={async () => { await signOut(); nav({ to: "/login" }); }} className="flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-left hover:bg-muted/50">
+        <button onClick={async () => { await signOut(); nav({ to: "/login" }); }}
+          className="flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-left hover:bg-muted/50">
           <LogOut className="h-5 w-5 text-destructive" />
           <span className="flex-1 text-sm font-semibold text-destructive">Logout</span>
         </button>
