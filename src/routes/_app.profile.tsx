@@ -1,9 +1,11 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LogOut, Settings, Shield, Palette, Award, Star, MessageSquare } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { UserAvatar } from "@/components/UserAvatar";
 import { getProfile, saveProfile, type UserProfile } from "@/lib/community";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_app/profile")({ component: Profile });
 
@@ -23,6 +25,43 @@ function Profile() {
     return p;
   });
 
+  // Hydrate display name from the profiles table (source of truth)
+  useEffect(() => {
+    if (!user) return;
+    let cancelled = false;
+    supabase
+      .from("profiles")
+      .select("display_name, avatar_url")
+      .eq("id", user.id)
+      .maybeSingle()
+      .then(({ data, error }) => {
+        if (cancelled) return;
+        if (error) { console.error("[profile] load failed:", error); return; }
+        if (data?.display_name) {
+          setProfile((prev) => {
+            if (prev.display_name === data.display_name) return prev;
+            const next = { ...prev, display_name: data.display_name as string };
+            saveProfile(next);
+            return next;
+          });
+        }
+      });
+    return () => { cancelled = true; };
+  }, [user]);
+
+  const handleProfileUpdate = async (next: UserProfile) => {
+    setProfile(next);
+    if (!user) return;
+    const { error } = await supabase
+      .from("profiles")
+      .update({ display_name: next.display_name })
+      .eq("id", user.id);
+    if (error) {
+      console.error("[profile] save failed:", error);
+      toast.error("Couldn't save profile changes");
+    }
+  };
+
   const items = [
     { icon: Settings, label: "Account Settings" },
     { icon: Palette, label: "Interface Theme" },
@@ -33,7 +72,7 @@ function Profile() {
     <main className="px-5 pt-10 pb-28">
       <div className="flex flex-col items-center">
         <div className="relative">
-          <UserAvatar profile={profile} size="xl" editable={!!user} onUpdate={setProfile} />
+          <UserAvatar profile={profile} size="xl" editable={!!user} onUpdate={handleProfileUpdate} />
           <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 rounded-full bg-secondary px-3 py-0.5 text-[10px] font-bold uppercase tracking-widest text-secondary-foreground whitespace-nowrap">PRO</div>
         </div>
         <h2 className="mt-5 text-2xl font-bold capitalize text-foreground">{profile.display_name}</h2>
