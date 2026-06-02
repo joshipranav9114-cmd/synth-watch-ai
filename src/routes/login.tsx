@@ -54,6 +54,15 @@ function Login() {
     setPw("");
   };
 
+  const verifyAuthenticatedUser = async () => {
+    const { data, error } = await supabase.auth.getUser();
+    if (error || !data.user) {
+      console.error("[auth] Supabase Auth user verification failed:", error);
+      throw new Error("Account authentication could not be verified. Please try again.");
+    }
+    return data.user;
+  };
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -78,11 +87,16 @@ function Login() {
           throw error;
         }
         if (data.session) {
+          await verifyAuthenticatedUser();
           persistEmail(email);
           toast.success("Welcome to AniVerse!");
           nav({ to: "/home" });
+        } else if (data.user) {
+          persistEmail(email);
+          toast.success("Account created. Check your inbox to confirm your email.");
         } else {
-          toast.success("Check your inbox to confirm your email.");
+          console.error("[auth] signUp returned no user and no error:", data);
+          throw new Error("Account creation could not be verified. Please try again.");
         }
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password: pw });
@@ -95,6 +109,7 @@ function Login() {
           }
           return;
         }
+        await verifyAuthenticatedUser();
         persistEmail(email);
         nav({ to: "/home" });
       }
@@ -114,6 +129,7 @@ function Login() {
       });
       if (result.error) throw result.error;
       if (result.redirected) return; // Browser navigating to Google
+      await verifyAuthenticatedUser();
       nav({ to: "/home" });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Google sign-in failed");
