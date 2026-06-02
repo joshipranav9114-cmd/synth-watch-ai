@@ -74,6 +74,7 @@ function Login() {
             toast.info("Account already exists — please sign in instead.");
             return;
           }
+          console.error("[auth] signUp error:", error);
           throw error;
         }
         if (data.session) {
@@ -86,6 +87,7 @@ function Login() {
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password: pw });
         if (error) {
+          console.error("[auth] signIn error:", error);
           if (error.message?.toLowerCase().includes("invalid")) {
             toast.error("Wrong email or password. Try again or reset your password.");
           } else {
@@ -97,6 +99,7 @@ function Login() {
         nav({ to: "/home" });
       }
     } catch (err) {
+      console.error("[auth] submit failed:", err);
       toast.error(err instanceof Error ? err.message : "Authentication failed");
     } finally {
       setLoading(false);
