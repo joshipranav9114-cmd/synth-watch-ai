@@ -24,10 +24,10 @@ import { Route as AppLatestEpisodesRouteImport } from './routes/_app.latest-epis
 import { Route as AppHomeRouteImport } from './routes/_app.home'
 import { Route as AppForYouRouteImport } from './routes/_app.for-you'
 import { Route as AppContinueWatchingRouteImport } from './routes/_app.continue-watching'
-import { Route as AppAssistantRouteImport } from './routes/_app.assistant'
-import { Route as AppAnimeIdRouteImport } from './routes/_app.anime.$id'
 import { Route as AppCommunityRouteImport } from './routes/_app.community'
+import { Route as AppAssistantRouteImport } from './routes/_app.assistant'
 import { Route as AppCommunityAnimeIdRouteImport } from './routes/_app.community.$animeId'
+import { Route as AppAnimeIdRouteImport } from './routes/_app.anime.$id'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
@@ -103,24 +103,24 @@ const AppContinueWatchingRoute = AppContinueWatchingRouteImport.update({
   path: '/continue-watching',
   getParentRoute: () => AppRoute,
 } as any)
-const AppAssistantRoute = AppAssistantRouteImport.update({
-  id: '/assistant',
-  path: '/assistant',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppAnimeIdRoute = AppAnimeIdRouteImport.update({
-  id: '/anime/$id',
-  path: '/anime/$id',
-  getParentRoute: () => AppRoute,
-} as any)
 const AppCommunityRoute = AppCommunityRouteImport.update({
   id: '/community',
   path: '/community',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAssistantRoute = AppAssistantRouteImport.update({
+  id: '/assistant',
+  path: '/assistant',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppCommunityAnimeIdRoute = AppCommunityAnimeIdRouteImport.update({
-  id: '/community/$animeId',
-  path: '/community/$animeId',
+  id: '/$animeId',
+  path: '/$animeId',
+  getParentRoute: () => AppCommunityRoute,
+} as any)
+const AppAnimeIdRoute = AppAnimeIdRouteImport.update({
+  id: '/anime/$id',
+  path: '/anime/$id',
   getParentRoute: () => AppRoute,
 } as any)
 
@@ -130,6 +130,7 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof OnboardingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/assistant': typeof AppAssistantRoute
+  '/community': typeof AppCommunityRouteWithChildren
   '/continue-watching': typeof AppContinueWatchingRoute
   '/for-you': typeof AppForYouRoute
   '/home': typeof AppHomeRoute
@@ -141,7 +142,6 @@ export interface FileRoutesByFullPath {
   '/watchlist': typeof AppWatchlistRoute
   '/api/chat': typeof ApiChatRoute
   '/anime/$id': typeof AppAnimeIdRoute
-  '/community': typeof AppCommunityRoute
   '/community/$animeId': typeof AppCommunityAnimeIdRoute
 }
 export interface FileRoutesByTo {
@@ -150,6 +150,7 @@ export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/assistant': typeof AppAssistantRoute
+  '/community': typeof AppCommunityRouteWithChildren
   '/continue-watching': typeof AppContinueWatchingRoute
   '/for-you': typeof AppForYouRoute
   '/home': typeof AppHomeRoute
@@ -161,7 +162,6 @@ export interface FileRoutesByTo {
   '/watchlist': typeof AppWatchlistRoute
   '/api/chat': typeof ApiChatRoute
   '/anime/$id': typeof AppAnimeIdRoute
-  '/community': typeof AppCommunityRoute
   '/community/$animeId': typeof AppCommunityAnimeIdRoute
 }
 export interface FileRoutesById {
@@ -172,6 +172,7 @@ export interface FileRoutesById {
   '/onboarding': typeof OnboardingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/_app/assistant': typeof AppAssistantRoute
+  '/_app/community': typeof AppCommunityRouteWithChildren
   '/_app/continue-watching': typeof AppContinueWatchingRoute
   '/_app/for-you': typeof AppForYouRoute
   '/_app/home': typeof AppHomeRoute
@@ -183,7 +184,6 @@ export interface FileRoutesById {
   '/_app/watchlist': typeof AppWatchlistRoute
   '/api/chat': typeof ApiChatRoute
   '/_app/anime/$id': typeof AppAnimeIdRoute
-  '/_app/community': typeof AppCommunityRoute
   '/_app/community/$animeId': typeof AppCommunityAnimeIdRoute
 }
 export interface FileRouteTypes {
@@ -194,6 +194,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/reset-password'
     | '/assistant'
+    | '/community'
     | '/continue-watching'
     | '/for-you'
     | '/home'
@@ -205,7 +206,6 @@ export interface FileRouteTypes {
     | '/watchlist'
     | '/api/chat'
     | '/anime/$id'
-    | '/community'
     | '/community/$animeId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -214,6 +214,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/reset-password'
     | '/assistant'
+    | '/community'
     | '/continue-watching'
     | '/for-you'
     | '/home'
@@ -225,7 +226,6 @@ export interface FileRouteTypes {
     | '/watchlist'
     | '/api/chat'
     | '/anime/$id'
-    | '/community'
     | '/community/$animeId'
   id:
     | '__root__'
@@ -235,6 +235,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/reset-password'
     | '/_app/assistant'
+    | '/_app/community'
     | '/_app/continue-watching'
     | '/_app/for-you'
     | '/_app/home'
@@ -246,7 +247,6 @@ export interface FileRouteTypes {
     | '/_app/watchlist'
     | '/api/chat'
     | '/_app/anime/$id'
-    | '/_app/community'
     | '/_app/community/$animeId'
   fileRoutesById: FileRoutesById
 }
@@ -366,12 +366,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppContinueWatchingRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/community': {
+      id: '/_app/community'
+      path: '/community'
+      fullPath: '/community'
+      preLoaderRoute: typeof AppCommunityRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/assistant': {
       id: '/_app/assistant'
       path: '/assistant'
       fullPath: '/assistant'
       preLoaderRoute: typeof AppAssistantRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/_app/community/$animeId': {
+      id: '/_app/community/$animeId'
+      path: '/$animeId'
+      fullPath: '/community/$animeId'
+      preLoaderRoute: typeof AppCommunityAnimeIdRouteImport
+      parentRoute: typeof AppCommunityRoute
     }
     '/_app/anime/$id': {
       id: '/_app/anime/$id'
@@ -380,25 +394,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAnimeIdRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/community': {
-      id: '/_app/community'
-      path: '/community'
-      fullPath: '/community'
-      preLoaderRoute: typeof AppCommunityRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/community/$animeId': {
-      id: '/_app/community/$animeId'
-      path: '/community/$animeId'
-      fullPath: '/community/$animeId'
-      preLoaderRoute: typeof AppCommunityAnimeIdRouteImport
-      parentRoute: typeof AppRoute
-    }
   }
 }
 
+interface AppCommunityRouteChildren {
+  AppCommunityAnimeIdRoute: typeof AppCommunityAnimeIdRoute
+}
+
+const AppCommunityRouteChildren: AppCommunityRouteChildren = {
+  AppCommunityAnimeIdRoute: AppCommunityAnimeIdRoute,
+}
+
+const AppCommunityRouteWithChildren = AppCommunityRoute._addFileChildren(
+  AppCommunityRouteChildren,
+)
+
 interface AppRouteChildren {
   AppAssistantRoute: typeof AppAssistantRoute
+  AppCommunityRoute: typeof AppCommunityRouteWithChildren
   AppContinueWatchingRoute: typeof AppContinueWatchingRoute
   AppForYouRoute: typeof AppForYouRoute
   AppHomeRoute: typeof AppHomeRoute
@@ -409,12 +422,11 @@ interface AppRouteChildren {
   AppTrendingRoute: typeof AppTrendingRoute
   AppWatchlistRoute: typeof AppWatchlistRoute
   AppAnimeIdRoute: typeof AppAnimeIdRoute
-  AppCommunityRoute: typeof AppCommunityRoute
-  AppCommunityAnimeIdRoute: typeof AppCommunityAnimeIdRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppAssistantRoute: AppAssistantRoute,
+  AppCommunityRoute: AppCommunityRouteWithChildren,
   AppContinueWatchingRoute: AppContinueWatchingRoute,
   AppForYouRoute: AppForYouRoute,
   AppHomeRoute: AppHomeRoute,
@@ -425,8 +437,6 @@ const AppRouteChildren: AppRouteChildren = {
   AppTrendingRoute: AppTrendingRoute,
   AppWatchlistRoute: AppWatchlistRoute,
   AppAnimeIdRoute: AppAnimeIdRoute,
-  AppCommunityRoute: AppCommunityRoute,
-  AppCommunityAnimeIdRoute: AppCommunityAnimeIdRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
