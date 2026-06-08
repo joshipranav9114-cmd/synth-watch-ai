@@ -1,34 +1,57 @@
 
 ## Goal
-Ensure every signup/login (email or Google) results in exactly one `profiles` row keyed by `auth.uid()`, sessions persist, and profile data loads + saves reliably.
+Transform the "Where to Watch" list on the anime detail page into a premium, branded streaming availability guide (IMDb / JustWatch feel) covering 9 platforms with real brand colors, logo marks, and polished glassmorphism cards.
 
-## Root cause
-The `public.handle_new_user()` function exists but **no trigger is attached to `auth.users`**, so no profile row is ever created. Session persistence and Google OAuth flow are already correct.
+## Scope
+- `src/lib/streaming.ts` — expand platform registry from 5 → 9 platforms, add brand tokens (gradient, accent, logo component reference), refine `KNOWN` mappings, keep deterministic fallback.
+- `src/components/PlatformBadges.tsx` — redesign `PlatformList` into premium branded cards; keep `PlatformChips` API unchanged so the hero badge row keeps working.
+- `src/components/PlatformLogos.tsx` (new) — inline SVG brand marks for each platform (no network/asset deps, crisp at any size, no licensing risk of hot-linked logos).
+- `src/styles.css` — add a couple of small utilities if needed (brand glow shadow, shimmer on hover). Reuse existing `glass` class.
 
-## Changes
+No backend, auth, routing, or data-shape changes. `getStreamingFor` signature stays the same so `PlatformChips` on the hero and anime cards keeps working.
 
-### 1. Database migration
-- Rewrite `public.handle_new_user()` to be idempotent and OAuth-aware: pull `display_name` from `raw_user_meta_data` (`display_name` → `full_name` → `name` → email local-part) and `avatar_url` from (`avatar_url` → `picture`). Use `INSERT ... ON CONFLICT (id) DO UPDATE` so it never creates duplicates and refreshes metadata on re-auth.
-- Create `on_auth_user_created` trigger (`AFTER INSERT ON auth.users`).
-- Create `on_auth_user_updated` trigger (`AFTER UPDATE OF raw_user_meta_data ON auth.users`) so OAuth metadata updates flow through.
-- Backfill missing rows for users that signed up before the trigger existed.
+## Platforms & brand tokens
+Each platform gets: `id`, `name`, `short`, `brandColor` (hex), `gradient` (CSS linear-gradient using brand color), `textOn` (white/black for contrast), `Logo` (inline SVG component), `searchUrl(title)`.
 
-### 2. `src/lib/auth.tsx` — client safety net
-- In the `onAuthStateChange` listener, on `SIGNED_IN` / `TOKEN_REFRESHED` / `USER_UPDATED` events, schedule (via `setTimeout(0)` to avoid the Supabase deadlock pattern) an upsert into `profiles` keyed on `id`, derived from `user.user_metadata`. Errors are `console.error`'d, not toasted.
+| Platform | Color | Mark |
+|---|---|---|
+| Netflix | #E50914 | stylized "N" wordmark stroke |
+| Crunchyroll | #F47521 | "C" swirl |
+| Disney+ | #1F80E0 | "D+" wordmark |
+| Prime Video | #00A8E1 | "prime" smile arc |
+| Hulu | #1CE783 (on black) | "hulu" lowercase wordmark |
+| HiDive | #00BCD4 | "h" diamond |
+| YouTube | #FF0000 | play triangle in rounded rect |
+| Apple TV+ | #000000 (white text) | Apple glyph + "tv+" |
+| Max | #002BE7 → #8200FF gradient | "max" wordmark |
 
-### 3. `src/routes/_app.profile.tsx`
-- Fetch the actual `profiles` row with `.maybeSingle()` on mount and seed `display_name` / `avatar_url` from it.
-- On avatar/name save, also `UPDATE` the `profiles` row (`display_name`, `avatar_url`); show a toast on error.
+All marks are hand-rolled SVGs (geometric approximations — official-looking, not pixel-perfect copies) to stay safe and avoid asset uploads.
 
-### 4. `src/routes/login.tsx`
-- Add `console.error` for auth failures (keeps current toast UX, helps debugging). No flow changes.
+## Card design (PlatformList rewrite)
+Each card:
+- Rounded-2xl, `glass` base, 1px ring tinted with the platform color, soft platform-colored glow shadow on hover.
+- Left: 44×44 rounded-xl tile with platform `gradient` background and the inline SVG logo (white/black per contrast).
+- Middle: platform name (bold, foreground), small "Stream now · SUB | DUB" caption in muted.
+- Right: "Watch Now" pill button with platform brand color background + `ExternalLink` icon; entire card is also a single `<a target="_blank" rel="noopener noreferrer">` for tap-friendly mobile.
+- Hover/active: `transition-all`, scale `1.01` on hover, `0.99` on active, glow intensifies, logo tile gets a subtle shimmer (CSS gradient sweep) via a `::after` element.
+- Mobile-first: single column, full-width, comfortable tap targets (≥56px tall). Stack name/caption with `min-w-0 truncate`.
 
-## Verification
-- Run a fresh email signup → `SELECT * FROM profiles WHERE id = <new uid>` returns one row.
-- Refresh page → still signed in, profile name/avatar render.
-- Sign in with Google → profile row exists with Google display name + picture.
-- Sign out and back in → still exactly one row (no duplicates).
+Loading/empty: if `getStreamingFor` returns nothing (shouldn't with fallback), render a small muted "Streaming info unavailable" line.
 
-## Files
-- New SQL migration (function rewrite + 2 triggers + backfill)
-- Edited: `src/lib/auth.tsx`, `src/routes/_app.profile.tsx`, `src/routes/login.tsx`
+## KNOWN mappings refresh
+Update curated mapping for the featured 7 anime to spread across new platforms realistically (e.g. add Hulu/Max where appropriate). Fallback stays deterministic by `malId` over the full 9-platform list, returning 2–3 platforms.
+
+## PlatformChips
+Keep current chip rendering, but swap the text-letter chip for the same inline `Logo` SVG scaled down (h-3 w-3) on a brand-gradient tile so hero badges match the cards. API unchanged.
+
+## Out of scope
+- No external logo image downloads (avoids trademark/asset hosting issues; SVG marks are inline).
+- No changes to `_app.anime.$id.tsx` markup beyond what re-renders automatically.
+- No new routes, no DB.
+
+## Acceptance
+- Detail page → "Where to Watch" shows up to 9 branded cards depending on title.
+- Each card opens the platform's search URL for that title in a new tab.
+- Cards visibly differ by brand color, with smooth hover/tap animation.
+- Hero `PlatformChips` row still renders and matches the new branding.
+- Works at 375px width without overflow; tap targets feel native.
